@@ -10,3 +10,5 @@ Repository for the Software Engineering 2 exam project - UniTN.
 
 * Daniele Parmeggiani (193729) - [@dpdani](https://github.com/dpdani)
 
+* Stefano Facchini - [@stefano-facchini](https://github.com/stefano-facchini)
+
