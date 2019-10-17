@@ -8,3 +8,5 @@ Repository for the Software Engineering 2 exam project - UniTN.
 
 * Simone Nascivera - [@simonenascivera](https://github.com/SimoneNascivera)
 
+* Daniele Parmeggiani (193729) - [@dpdani](https://github.com/dpdani)
+
