@@ -6,3 +6,5 @@ Repository for the Software Engineering 2 exam project - UniTN.
 
 * Matteo Franzil - [@mfranzil](https://github.com/mfranzil/)
 
+* Simone Nascivera - [@simonenascivera](https://github.com/SimoneNascivera)
+
