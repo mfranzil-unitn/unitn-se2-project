@@ -12,3 +12,5 @@ Repository for the Software Engineering 2 exam project - UniTN.
 
 * Stefano Facchini - [@stefano-facchini](https://github.com/stefano-facchini)
 
+* Paolo Baiguera - [@paolobaigueraunitn](https://github.com/paolobaigueraunitn)
+
