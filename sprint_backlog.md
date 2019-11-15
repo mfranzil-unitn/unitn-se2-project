@@ -11,11 +11,14 @@
 |   ID   |   Title                   | Imp (1) | Est (2) |   Description                 |
 ---------|---------------------------|---------|---------|--------------------------------
 |  `01`  |   Login/Signup            |   100   |    70   |   The user can signup and login and the system will maintain his personal data |
+|  `02`  |   Line Placing            |    80   |    10   |   The user can tap on two different points of the screen and the system will log them as a geolocalized virtual line* |
+|  `03`  |   Writing a Review        |    70   |    40   |   The user can add a review to a line |
+|  `04`  |   Reading a Review        |    60   |    30   |   The user can read the reviews that other users have previously added to the system |
 
 **Needed work**:
-* Set up a Postgres DB for maintaining data, creating a table for user data.
 * Set up the project skeleton.
-* Create an API for sign-up and one for log-in, implementing hash + salt tecniques for memorizing passwords in the DB.
+* Create an API for sign-up and one for log-in, implementing hash + salt tecniques for memorizing passwords.
+* Create APIs for Line Placing and reading/writing reviews
 
 # Table notation
 
