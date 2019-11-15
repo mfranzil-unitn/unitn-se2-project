@@ -2,7 +2,7 @@
 
 ## Sprint #1 (16/11/2019 - 18/11/2019)
 
-**Sprint goal**: Set up a fully functioning database, in order implement sign-up and log-in functionality.
+**Sprint goal**: Implement sign-up and log-in functionality, develop Line Placing, Writing a Review and Reading a Review API
 
 **Sprint duration**: 3 days
 
