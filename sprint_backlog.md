@@ -4,7 +4,7 @@
 
 **Sprint goal**: Implement sign-up and log-in functionality, develop Line Placing, Writing a Review and Reading a Review API
 
-**Sprint duration**: 3 days
+**Sprint duration**: 4 days
 
 **Product backlog items**:
 
