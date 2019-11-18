@@ -1,6 +1,6 @@
 # Sprint Backlog
 
-## Sprint #1 (16/11/2019 - 18/11/2019)
+## Sprint #1 (21/11/2019 - 24/11/2019)
 
 **Sprint goal**: Implement sign-up and log-in functionality, develop Line Placing, Writing a Review and Reading a Review API
 
