@@ -5,11 +5,12 @@ async function write(review) {
     throw Error('review parameter required.');
   }
 
-  if (!review.title || !review.text || !review.lineid) {
-    throw Error('Please enter a title, some text and a line-id.');
+  if (!review.id || !review.user_id || !review.line_id || !review.rating || !review.description_text) {
+    throw Error('Please enter an id, your user_id, a line_id, a rating and  some text');
   }
 
-  return Review.create(review);
+  Review.write(review);
+  return;
 }
 
 async function read(filters) {
