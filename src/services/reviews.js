@@ -5,16 +5,16 @@ async function write(review) {
     throw Error('review parameter required.');
   }
 
-  if (!review.id || !review.user_id || !review.line_id || !review.rating || !review.description_text) {
+  if (!review.rev_id || !review.user_id || !review.line_id || !review.rating || !review.description_text) {
     throw Error('Please enter an id, your user_id, a line_id, a rating and  some text');
   }
 
-  Review.write(review);
+  Review.create(review);
   return;
 }
 
 async function read(filters) {
-  return Review.find(filters);
+  return Review.read(filters);
 }
 
 module.exports = {
