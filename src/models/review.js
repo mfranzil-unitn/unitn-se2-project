@@ -9,8 +9,16 @@ async function create(review) {
 
 // eslint-disable-next-line no-unused-vars
 async function read(filters) {
-  console.log(filters);
-  return reviews;
+  function filterit(value) {
+    return  (value.rev_id == filters.rev_id &&
+      value.user_id == filters.user_id &&
+      value.line_id == filters.line_id &&
+      value.rating == filters.rating &&
+      value.description_text == filters.description_text);
+  }
+  console.log("MODELS");
+  console.log(reviews.filter(filterit));
+  return reviews.filter(filterit);
 }
 
 module.exports = {

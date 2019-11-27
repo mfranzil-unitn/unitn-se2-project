@@ -14,6 +14,8 @@ async function write(review) {
 }
 
 async function read(filters) {
+  console.log('Service:')
+  console.log(Review.read(filters));
   return Review.read(filters);
 }
 
