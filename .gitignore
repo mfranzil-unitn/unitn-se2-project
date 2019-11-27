@@ -61,3 +61,8 @@ typings/
 # next.js build output
 .next
 
+#.idea created by Mac/WebStorm
+.idea
+
+ #.DS_STORE created by Mac
+.DS_Store
