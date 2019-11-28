@@ -16,7 +16,7 @@ async function read(filters) {
       value.rating == filters.rating &&
       value.description_text == filters.description_text);
   }
-  console.log("MODELS");
+  console.log('MODELS');
   console.log(reviews.filter(filterit));
   return reviews.filter(filterit);
 }

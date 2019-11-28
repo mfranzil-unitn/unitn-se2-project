@@ -10,7 +10,7 @@ module.exports = async function(routes) {
   route.get('/', async(req,res,next)=>{
     try{
       await ReviewService.read(req.query);
-      res.status(200).json();
+      res.status(200).json(req.query);
     } catch(e){
       const error = new Error('Error while returning the review: ' + e.message);
       error.httpStatusCode = 400;
@@ -21,7 +21,7 @@ module.exports = async function(routes) {
   route.post('/', async (req, res, next) => {
     try {
       await ReviewService.write(req.query);
-      res.status(200).json();
+      res.status(201).json(req.query);
     } catch (e) {
       const error = new Error('Wrong review info: ' + e.message);
       error.httpStatusCode = 400;
