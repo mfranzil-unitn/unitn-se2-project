@@ -1,4 +1,4 @@
-const Review = require('@app/models/review');
+const Review = require('@app/models/reviews');
 
 async function write(review) {
   if (!review) {
@@ -14,7 +14,8 @@ async function write(review) {
 }
 
 async function read(filters) {
-  return Review.read(filters);
+  let res = await Review.read(filters);
+  return res;
 }
 
 module.exports = {
