@@ -1,30 +1,28 @@
 const db = require('.');
 
 const queries = {
-    insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank)"
-        + " VALUES ($1, $2, $3, $4)",
-    update: "UPDATE user_ SET (user_hash, user_salt, user_rank)"
-        + " = ($2, $3, $4) WHERE user_id = $1;",
-    delete: "DELETE FROM user_ WHERE user_id = $1;",
-    getByPrimaryKey: "SELECT * FROM user_ WHERE user_id = $1",
-    getAll: "SELECT * FROM user_;",
-    getCount: "SELECT COUNT(*) FROM user_;"
+    insert: "INSERT INTO chat (chat_name) VALUES ($1) RETURNING chat_id;",
+    update: "UPDATE chat SET (chat_name) = ($2) WHERE chat_id = $1;",
+    delete: "DELETE FROM chat WHERE chat_id = $1;",
+    getByPrimaryKey: "SELECT * FROM chat WHERE chat_id = $1;",
+    getAll: "SELECT * FROM chat;",
+    getCount: "SELECT COUNT(*) FROM chat;"
 };
 
-// user = { user_id : String, user_hash: String, user_salt: String, user_rank: String }
+// chat = { chat_id: String, chat_name: String };
 
 module.exports = {
-    insert: async ({ user_id, user_hash, user_salt, user_rank }) => {
+    insert: async ({ chat_name }) => {
         try {
-            let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank);
-            return res.rowCount;
+            let res = await db.executeQuery(queries.insert, chat_name);
+            return res.rows[0].chat_id;
         } catch (error) {
             return -1;
         }
     },
-    update: async ({ user_id, user_hash, user_salt, user_rank }) => {
+    update: async ({ chat_id, chat_name }) => {
         try {
-            let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank);
+            let res = await db.executeQuery(queries.update, chat_id, chat_name);
             return res.rowCount;
         } catch (error) {
             return -1;
