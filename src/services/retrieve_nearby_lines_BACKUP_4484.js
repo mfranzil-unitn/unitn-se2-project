@@ -1,5 +1,6 @@
 const ServicesLine = require('@app/services/lines');
 
+<<<<<<< HEAD
 async function retrieve(point) {
     
     let lat = point.lat;
@@ -8,16 +9,27 @@ async function retrieve(point) {
 
     if ( !lat || !lon ) {
         throw new Error ("Missing latitude or longitude")
+=======
+async function retrieve(lat, lon, rad = 0.0013 /* Circa 0.1 km  */) {
+    if (!lat || !lon) {
+        throw new Error("Missing latitude or longitude")
+>>>>>>> 253455f9a778b9521f161eeacad696d416349d3d
     }
 
     let existing_lines = await ServicesLine.getAll();
     console.log(existing_lines);
     let nearby_lines = [];
 
+<<<<<<< HEAD
 
 
     /*existing_lines.forEach(element => {
         if ( ( (Math.abs(element.start_lat - lat) < rad ) && (Math.abs(element.start_lon - lon) < rad ) ) || ( ( Math.abs(element.end_lat - lat) < rad ) && (Math.abs(element.end_lon - lon) < rad) ) ) {
+=======
+    existing_lines.forEach(element => {
+        if (((Math.abs(element.start_lat - lat) < rad) && (Math.abs(element.start_lon - lon) < rad))
+            || ((Math.abs(element.end_lat - lat) < rad) && (Math.abs(element.end_lon - lon) < rad))) {
+>>>>>>> 253455f9a778b9521f161eeacad696d416349d3d
             nearby_lines.push(element);
         }
     })*/
