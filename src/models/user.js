@@ -1,30 +1,30 @@
 const db = require('.');
 
 const queries = {
-    insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank)"
-        + " VALUES ($1, $2, $3, $4)",
-    update: "UPDATE user_ SET (user_hash, user_salt, user_rank)"
-        + " = ($2, $3, $4) WHERE user_id = $1;",
+    insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank, user_name)"
+        + " VALUES ($1, $2, $3, $4, $5)",
+    update: "UPDATE user_ SET (user_hash, user_salt, user_rank, user_name)"
+        + " = ($2, $3, $4, $5) WHERE user_id = $1;",
     delete: "DELETE FROM user_ WHERE user_id = $1;",
     getByPrimaryKey: "SELECT * FROM user_ WHERE user_id = $1",
     getAll: "SELECT * FROM user_;",
     getCount: "SELECT COUNT(*) FROM user_;"
 };
 
-// user = { user_id : String, user_hash: String, user_salt: String, user_rank: String }
+// user = { user_id : String, user_hash: String, user_salt: String, user_rank: String, user_name: String }
 
 module.exports = {
-    insert: async ({ user_id, user_hash, user_salt, user_rank }) => {
+    insert: async ({ user_id, user_hash, user_salt, user_rank, user_name }) => {
         try {
-            let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank);
+            let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
         } catch (error) {
             return -1;
         }
     },
-    update: async ({ user_id, user_hash, user_salt, user_rank }) => {
+    update: async ({ user_id, user_hash, user_salt, user_rank, user_name }) => {
         try {
-            let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank);
+            let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
         } catch (error) {
             return -1;
