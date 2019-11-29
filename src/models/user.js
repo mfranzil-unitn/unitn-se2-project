@@ -18,7 +18,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -26,7 +27,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -34,7 +36,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.delete, primaryKey);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -42,7 +45,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
             return res.rows === 1 ? res.rows[0] : undefined;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -50,7 +54,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -58,7 +63,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     }

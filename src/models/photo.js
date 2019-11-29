@@ -1,7 +1,7 @@
 const db = require('.');
 
 const queries = {
-    insert: "INSERT INTO photo (photo_review_id, photo_path) VALUES ($1, $2)",
+    insert: "INSERT INTO photo (photo_review_id, photo_path) VALUES ($1, $2) RETURNING photo_id",
     update: "UPDATE photo SET (photo_review_id, photo_path) = ($2, $3) WHERE photo_id = $1;",
     delete: "DELETE FROM photo WHERE photo_id = $1;",
     getByPrimaryKey: "SELECT * FROM photo WHERE photo_id = $1",
@@ -18,7 +18,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.insert, photo_review_id, photo_path);
             return res.rows[0].photo_id;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -26,7 +27,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.update, photo_id, photo_review_id, photo_path);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -34,7 +36,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.delete, primaryKey);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -42,7 +45,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
             return res.rows === 1 ? res.rows[0] : undefined;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -50,7 +54,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -58,7 +63,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     }

@@ -1,7 +1,7 @@
 const Line = require('@app/models/line');
 
 async function place(line) {
-  if (!line || typeof line !== "object") {
+  if (!line) {
     throw new Error('Line parameter required.');
   }
 

@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const saltLength = 16;
 
 function getNextSalt() {
-    return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, saltLength);
+    return crypto.randomBytes(Math.ceil(saltLength / 2)).toString('hex').slice(0, saltLength);
 };
 
 function hash(password, salt) {
@@ -27,7 +27,6 @@ async function create(user) {
     user.user_rank = 0;
     user.user_salt = getNextSalt();
     user.user_hash = hash(user.user_password, user.user_salt);
-    //user.user_password = "";
 
     return User.insert(user);
 }

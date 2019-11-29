@@ -22,7 +22,8 @@ module.exports = {
             let res = await db.executeQuery(queries.insert, message_datetime, message_text,
                 message_chat_id, message_user_id);
             return res.rows[0].message_id;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -31,7 +32,8 @@ module.exports = {
             let res = await db.executeQuery(queries.update, message_id, message_datetime, message_text,
                 message_chat_id, message_user_id);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -39,7 +41,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.delete, primaryKey);
             return res.rowCount;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return -1;
         }
     },
@@ -47,7 +50,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
             return res.rows === 1 ? res.rows[0] : undefined;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -55,7 +59,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     },
@@ -63,7 +68,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch (error) {
+        } catch(error) {
+            console.log(error.stack);
             return undefined;
         }
     }
