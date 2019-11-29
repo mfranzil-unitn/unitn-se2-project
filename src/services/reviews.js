@@ -17,10 +17,8 @@ async function write(review) {
 
 async function read(filters) {
     // Change filters
-    /*const res = await Review.getByPrimaryKey(filters.review_id);
-    console.log(res);
-    return res;*/
-    return Review.getByPrimaryKey(filters.review_id);
+    const res =  await Review.getByPrimaryKey(filters.review_id);
+    return res;
 }
 
 module.exports = {
