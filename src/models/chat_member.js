@@ -47,7 +47,7 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, 
                 primaryKey.chat_member_chat_id, primaryKey.chat_member_user_id);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch(error) {
             console.log(error.stack);
             return undefined;

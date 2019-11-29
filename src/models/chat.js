@@ -9,7 +9,7 @@ const queries = {
     getCount: "SELECT COUNT(*) FROM chat;"
 };
 
-// chat = { chat_id: String, chat_name: String };
+// chat = { chat_id: Integer, chat_name: String };
 
 module.exports = {
     insert: async ({ chat_name }) => {
@@ -23,7 +23,7 @@ module.exports = {
     },
     update: async ({ chat_id, chat_name }) => {
         try {
-            let res = await db.executeQuery(queries.update, chat_id, chat_name);
+            let res = await db.executeQuery(queries.update, parseInt(chat_id), chat_name);
             return res.rowCount;
         } catch(error) {
             console.log(error.stack);
@@ -32,7 +32,7 @@ module.exports = {
     },
     delete: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.delete, primaryKey);
+            let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch(error) {
             console.log(error.stack);
@@ -41,8 +41,8 @@ module.exports = {
     },
     getByPrimaryKey: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch(error) {
             console.log(error.stack);
             return undefined;

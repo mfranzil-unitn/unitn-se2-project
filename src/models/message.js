@@ -20,7 +20,7 @@ module.exports = {
     insert: async ({ message_datetime, message_text, message_chat_id, message_user_id }) => {
         try {
             let res = await db.executeQuery(queries.insert, message_datetime, message_text,
-                message_chat_id, message_user_id);
+                parseInt(message_chat_id), message_user_id);
             return res.rows[0].message_id;
         } catch(error) {
             console.log(error.stack);
@@ -29,8 +29,8 @@ module.exports = {
     },
     update: async ({ message_id, message_datetime, message_text, message_chat_id, message_user_id }) => {
         try {
-            let res = await db.executeQuery(queries.update, message_id, message_datetime, message_text,
-                message_chat_id, message_user_id);
+            let res = await db.executeQuery(queries.update, parseInt(message_id), message_datetime, message_text,
+                parseInt(message_chat_id), message_user_id);
             return res.rowCount;
         } catch(error) {
             console.log(error.stack);
@@ -39,7 +39,7 @@ module.exports = {
     },
     delete: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.delete, primaryKey);
+            let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch(error) {
             console.log(error.stack);
@@ -48,8 +48,8 @@ module.exports = {
     },
     getByPrimaryKey: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch(error) {
             console.log(error.stack);
             return undefined;

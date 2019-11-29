@@ -32,7 +32,7 @@ module.exports = {
     },
     update: async ({ line_id, line_user_id, line_start_lat, line_start_lon, line_end_lat, line_end_lon, line_name, line_description }) => {
         try {
-            let res = await db.executeQuery(queries.update, line_id, line_user_id, parseFloat(line_start_lat),
+            let res = await db.executeQuery(queries.update, parseInt(line_id), line_user_id, parseFloat(line_start_lat),
                 parseFloat(line_start_lon), parseFloat(line_end_lat), parseFloat(line_end_lon), line_name, line_description);
             return res.rowCount;
         } catch(error) {
@@ -42,7 +42,7 @@ module.exports = {
     },
     delete: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.delete, primaryKey);
+            let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch(error) {
             console.log(error.stack);
@@ -51,8 +51,8 @@ module.exports = {
     },
     getByPrimaryKey: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch(error) {
             console.log(error.stack);
             return undefined;

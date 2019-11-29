@@ -44,7 +44,7 @@ module.exports = {
     getByPrimaryKey: async (primaryKey) => {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch(error) {
             console.log(error.stack);
             return undefined;

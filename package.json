@@ -1,7 +1,7 @@
 {
-  "name": "express-starterkit",
+  "name": "se2-project",
   "version": "0.1.0",
-  "description": "Simple Express.js code structure",
+  "description": "Software Engineering 2 exam project. UniTN",
   "main": "src/app.js",
   "scripts": {
     "test": "jest --verbose",
@@ -11,7 +11,7 @@
     "i": "node ./install-wrapper.js install",
     "u": "node ./install-wrapper.js uninstall"
   },
-  "author": "Jorge Ramírez",
+  "author": "NonSonoPrompt",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.23",

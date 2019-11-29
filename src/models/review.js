@@ -21,8 +21,8 @@ const queries = {
 module.exports = {
     insert: async ({ review_user_id, review_line_id, review_rating, review_description }) => {
         try {
-            let res = await db.executeQuery(queries.insert, review_user_id, review_line_id,
-                review_rating, review_description);
+            let res = await db.executeQuery(queries.insert, review_user_id, parseInt(review_line_id),
+                parseFloat(review_rating), review_description);
             return res.rows[0].review_id;
         } catch (error) {
             console.log(error.stack);
@@ -31,8 +31,8 @@ module.exports = {
     },
     update: async ({ review_id, review_user_id, review_line_id, review_rating, review_description }) => {
         try {
-            let res = await db.executeQuery(queries.update, review_id, review_user_id, review_line_id,
-                review_rating, review_description);
+            let res = await db.executeQuery(queries.update, parseInt(review_id), review_user_id, parseInt(review_line_id),
+                parseFloat(review_rating), review_description);
             return res.rowCount;
         } catch (error) {
             console.log(error.stack);
@@ -41,7 +41,7 @@ module.exports = {
     },
     delete: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.delete, primaryKey);
+            let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch (error) {
             console.log(error.stack);
@@ -50,8 +50,8 @@ module.exports = {
     },
     getByPrimaryKey: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
-            return res.rows === 1 ? res.rows[0] : undefined;
+            let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
+            return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch (error) {
             console.log(error.stack);
             return undefined;

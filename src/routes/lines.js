@@ -8,7 +8,6 @@ module.exports = async function (routes) {
   routes.use('/line', route);
 
   route.post('/', async (req, res, next) => {
-    console.log(req.query)
     try {
       await PlaceLineService.place(req.query);
       res.status(200).end();
