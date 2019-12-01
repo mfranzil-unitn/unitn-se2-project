@@ -6,11 +6,11 @@ const reviews = require('./reviews');
 const retrieve = require('./retrieve_nearby_lines');
 
 module.exports = () => {
-  const routes = Router();
-  users(routes);
-  lines(routes);
-  reviews(routes);
-  retrieve(routes);
+    const routes = Router();
+    users(routes);
+    lines(routes);
+    reviews(routes);
+    retrieve(routes);
 
-  return routes;
+    return routes;
 };

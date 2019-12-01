@@ -1,5 +1,7 @@
 const db = require('.');
 
+const Logger = require('@app/loaders/logger');
+
 const queries = {
     insert: "INSERT INTO chat (chat_name) VALUES ($1) RETURNING chat_id;",
     update: "UPDATE chat SET (chat_name) = ($2) WHERE chat_id = $1;",
@@ -16,8 +18,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.insert, chat_name);
             return res.rows[0].chat_id;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -25,8 +27,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.update, parseInt(chat_id), chat_name);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -34,8 +36,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -43,8 +45,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
             return res.rows.length === 1 ? res.rows[0] : undefined;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -52,8 +54,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -61,8 +63,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     }

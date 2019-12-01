@@ -1,4 +1,5 @@
 const db = require('.');
+const Logger = require('@app/loaders/logger');
 
 const queries = {
     insert: "INSERT INTO review (review_user_id, review_line_id, review_rating, review_description)"
@@ -25,7 +26,7 @@ module.exports = {
                 parseFloat(review_rating), review_description);
             return res.rows[0].review_id;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -35,7 +36,7 @@ module.exports = {
                 parseFloat(review_rating), review_description);
             return res.rowCount;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -44,7 +45,7 @@ module.exports = {
             let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -53,7 +54,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
             return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -62,7 +63,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -71,7 +72,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     }

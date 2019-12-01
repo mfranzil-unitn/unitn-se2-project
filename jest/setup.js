@@ -3,4 +3,5 @@ module.exports = async function() {
   global.__base = __dirname + '/../src/';
 
   // put your code here
+  process.env.NODE_ENV = "test";
 };

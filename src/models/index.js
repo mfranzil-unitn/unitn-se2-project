@@ -1,6 +1,8 @@
 const { Pool } = require('pg');
+const config = require('@app/config');
+const Logger = require('@app/loaders/logger');
 
-const pool = new Pool();
+const pool = new Pool(config.db);
 
 let queryCounter = 0;
 
@@ -23,11 +25,11 @@ module.exports = {
             res = await client.query(query);
             const duration = Date.now() - start;
             await client.query('COMMIT');
-            console.log("Query executed", { query: query, duration: duration });
+            Logger.error("Query executed", { query: query, duration: duration });
         } catch (error) {
             await client.query('ROLLBACK');
             client.release();
-            console.log("Failed to execute query", { query: query, error: error.stack });
+            Logger.error("Failed to execute query", { query: query, error: error.stack });
         }
 
         return res;

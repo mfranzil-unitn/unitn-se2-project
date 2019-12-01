@@ -1,4 +1,5 @@
 const db = require('.');
+const Logger = require('@app/loaders/logger');
 
 const queries = {
     insert: "INSERT INTO photo (photo_review_id, photo_path) VALUES ($1, $2) RETURNING photo_id",
@@ -20,7 +21,7 @@ module.exports = {
                 photo_path);
             return res.rows[0].photo_id;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -30,7 +31,7 @@ module.exports = {
                 photo_path);
             return res.rowCount;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -39,7 +40,7 @@ module.exports = {
             let res = await db.executeQuery(queries.delete, parseInt(primaryKey));
             return res.rowCount;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -48,7 +49,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getByPrimaryKey, parseInt(primaryKey));
             return res.rows.length === 1 ? res.rows[0] : undefined;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -57,7 +58,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -66,7 +67,7 @@ module.exports = {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     }

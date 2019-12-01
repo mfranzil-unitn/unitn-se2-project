@@ -16,8 +16,8 @@ module.exports = async function (routes) {
             error.httpStatusCode = 400;
             next(error);
         }
-    })
-
+    });
+    
     route.post('/', async (req, res, next) => {
         try {
             await ReviewService.write(req.query);

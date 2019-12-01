@@ -16,7 +16,7 @@
   "rules": {
     "prettier/prettier": "error",
     "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": false }],
-    "linebreak-style": [2, "unix"],
+    "linebreak-style": [4, "unix"],
     "semi": [2, "always"],
     "max-len": ["error", 120]
   }

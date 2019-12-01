@@ -1,5 +1,7 @@
 const db = require('.');
 
+const Logger = require('@app/loaders/logger');
+
 const queries = {
     insert: "INSERT INTO chat_member (chat_member_chat_id, chat_member_user_id) VALUES ($1, $2)",
     update: "UPDATE chat_member SET (chat_member_chat_id, chat_member_user_id) = ($1, $2)" +
@@ -19,8 +21,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.insert, chat_member_chat_id, chat_member_user_id);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -28,28 +30,28 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.update, chat_member_chat_id, chat_member_user_id);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
     delete: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.delete, primaryKey.chat_member_chat_id, 
+            let res = await db.executeQuery(queries.delete, primaryKey.chat_member_chat_id,
                 primaryKey.chat_member_user_id);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
     getByPrimaryKey: async (primaryKey) => {
         try {
-            let res = await db.executeQuery(queries.getByPrimaryKey, 
+            let res = await db.executeQuery(queries.getByPrimaryKey,
                 primaryKey.chat_member_chat_id, primaryKey.chat_member_user_id);
             return res.rows.length === 1 ? res.rows[0] : undefined;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -57,8 +59,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -66,8 +68,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     }

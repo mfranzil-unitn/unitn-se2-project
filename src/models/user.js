@@ -1,4 +1,5 @@
 const db = require('.');
+const Logger = require('@app/loaders/logger');
 
 const queries = {
     insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank, user_name)"
@@ -18,8 +19,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -27,8 +28,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank, user_name);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -36,8 +37,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.delete, primaryKey);
             return res.rowCount;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return -1;
         }
     },
@@ -45,8 +46,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getByPrimaryKey, primaryKey);
             return res.rows.length === 1 ? res.rows[0] : undefined;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -54,8 +55,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getAll);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     },
@@ -63,8 +64,8 @@ module.exports = {
         try {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
-        } catch(error) {
-            console.log(error.stack);
+        } catch (error) {
+            Logger.error(error.stack);
             return undefined;
         }
     }
