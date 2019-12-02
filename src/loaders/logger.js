@@ -22,7 +22,6 @@ if (process.env.NODE_ENV !== 'development') {
 
 const LoggerInstance = winston.createLogger({
     level: config.logs.level,
-    silent: process.env.NODE_ENV === 'test',
     levels: winston.config.npm.levels,
     format: winston.format.combine(
         winston.format.timestamp({

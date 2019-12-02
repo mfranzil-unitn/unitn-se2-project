@@ -1,15 +1,18 @@
 const path = require('path');
 const dotenv = require('dotenv');
 
-// Set the NODE_ENV to 'development' by default
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+if (!process.env.TRAVIS) {
+    // Set the NODE_ENV to 'development' by default
+    process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-const result = dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+    const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
 
-if (result.error) {
-    // This error should crash whole process
-    throw result.error;
+    const result = dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+
+    if (result.error) {
+        // This error should crash whole process
+        throw result.error;
+    }
 }
 
 module.exports = {

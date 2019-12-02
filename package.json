@@ -4,7 +4,7 @@
   "description": "Software Engineering 2 exam project. UniTN",
   "main": "src/app.js",
   "scripts": {
-    "test": "jest --verbose",
+    "test": "jest --verbose --detectOpenHandles",
     "start": "nodemon",
     "preinstall": "rm -f node_modules/@app",
     "postinstall": "node ./create-symlink.js",
