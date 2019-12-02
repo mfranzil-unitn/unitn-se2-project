@@ -10,9 +10,9 @@ async function write(review) {
             + 'review_line_id : Number, review_rating : Number, review_description: String }');
     }
 
-    Review.insert(review);
+    let ret = await Review.insert(review);
     console.log('Added new review');
-    return;
+    return ret;
 }
 
 async function read(filters) {

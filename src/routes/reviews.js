@@ -17,11 +17,11 @@ module.exports = async function (routes) {
             next(error);
         }
     });
-    
+
     route.post('/', async (req, res, next) => {
         try {
-            await ReviewService.write(req.query);
-            res.status(201).json();
+            const result = await ReviewService.write(req.query);
+            res.status(201).json('Added review with id: ' + result);
         } catch (e) {
             const error = new Error('Wrong review info: ' + e.message);
             error.httpStatusCode = 400;
