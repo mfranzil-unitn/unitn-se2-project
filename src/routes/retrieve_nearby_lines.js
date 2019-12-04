@@ -9,6 +9,9 @@ module.exports = async function (routes) {
 
     route.get('/', async (req, res, next) => {
         try {
+
+            console.log(req.query);
+
             const result = await RetrieveService.retrieve(req.query);
             res.status(200).json(result);
         } catch (e) {
