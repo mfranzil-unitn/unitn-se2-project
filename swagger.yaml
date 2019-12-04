@@ -125,7 +125,7 @@ paths:
           description: "Error while getting Line"
         404:
           description: "Line with provided LineID not found"
-          
+
   /review:
     post:
       tags:
@@ -203,6 +203,8 @@ paths:
               $ref: "#/definitions/Review"
           400:
             description: "Error while getting Review"
+          404:
+            description: "Review with provided ReviewID not found"
 
 
 

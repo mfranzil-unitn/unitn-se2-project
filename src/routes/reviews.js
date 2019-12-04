@@ -24,7 +24,7 @@ module.exports = async function (routes) {
           if (e.constructor === ReviewService.MissingReviewError) {
             error.status = 404;
           } else {
-            error.status = 400;
+            error.status = 500;
           }
           next(error);
         }
