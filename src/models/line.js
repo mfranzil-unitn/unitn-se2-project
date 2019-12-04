@@ -26,6 +26,7 @@ module.exports = {
                 parseFloat(line_start_lon), parseFloat(line_end_lat), parseFloat(line_end_lon), line_name, line_description);
             return res.rows[0].line_id;
         } catch (error) {
+            throw new Error('UserID not found');
             console.log(error.stack);
             return -1;
         }

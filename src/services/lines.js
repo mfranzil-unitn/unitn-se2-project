@@ -1,5 +1,12 @@
 const Line = require('@app/models/line');
 
+class MissingLineError extends Error {
+    constructor(...args) {
+        super(...args)
+        Error.captureStackTrace(this, MissingLineError)
+    }
+}
+
 async function place(line) {
     if (line === undefined) {
         throw new Error('Line parameter required.');
@@ -25,7 +32,7 @@ async function get(id) {
     if (parseInt(id) != NaN && id >= 0) {
         let res = await Line.getByPrimaryKey(id);
         if(res === undefined){
-            throw new Error('Line with this LineID not found');
+            throw new MissingLineError('Line with this LineID not found');
         }
         return res;
     }
@@ -35,6 +42,7 @@ async function get(id) {
 }
 
 module.exports = {
+    MissingLineError,
     place,
     getAll,
     get

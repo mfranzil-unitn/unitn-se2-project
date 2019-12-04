@@ -13,13 +13,13 @@ module.exports = async function (routes) {
             res.status(200).end();
         } catch (e) {
             const error = new Error('Wrong line info: ' + e.message);
+            console.log(e);
             error.status = 400;
             next(error);
         }
     });
 
     route.get('/*', async (req, res, next) => {
-        console.log(req.path);
         let result;
 
         if (req.path === "/") {
@@ -29,12 +29,14 @@ module.exports = async function (routes) {
         else {
             try {
                 result = await PlaceLineService.get(req.path.replace('/', ''));
-                console.log("Result:");
-                console.log(result);
                 res.status(200).json(result);
             } catch (e) {
                 const error = new Error('Error while getting Line: ' + e.message);
-                error.status = 400;
+                if (e.constructor === PlaceLineService.MissingLineError) {
+                    error.status = 404;
+                } else {
+                    error.status = 400;
+                }
                 next(error);
             }
         }
