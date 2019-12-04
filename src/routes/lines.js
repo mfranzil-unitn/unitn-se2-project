@@ -24,12 +24,19 @@ module.exports = async function (routes) {
 
         if (req.path === "/") {
             result = await PlaceLineService.getAll();
+            res.status(200).json(result);
         }
         else {
-            result = await PlaceLineService.get(req.path.replace('/', ''));
-            console.log("Result:");
-            console.log(result);
+            try {
+                result = await PlaceLineService.get(req.path.replace('/', ''));
+                console.log("Result:");
+                console.log(result);
+                res.status(200).json(result);
+            } catch (e) {
+                const error = new Error('Error while getting Line: ' + e.message);
+                error.status = 400;
+                next(error);
+            }
         }
-        res.status(200).json(result);
     });
 };

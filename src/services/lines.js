@@ -1,7 +1,7 @@
 const Line = require('@app/models/line');
 
 async function place(line) {
-    if (!line) {
+    if (line === undefined) {
         throw new Error('Line parameter required.');
     }
 
@@ -22,8 +22,16 @@ async function getAll() {
 }
 
 async function get(id) {
-    let res = await Line.getByPrimaryKey(id);
-    return res;
+    if (parseInt(id) != NaN && id >= 0) {
+        let res = await Line.getByPrimaryKey(id);
+        if(res === undefined){
+            throw new Error('Line with this LineID not found');
+        }
+        return res;
+    }
+    else{
+        throw new Error('Please enter a valid LineID');
+    }
 }
 
 module.exports = {
