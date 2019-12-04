@@ -11,10 +11,15 @@ module.exports = async function (routes) {
         try {
           let result;
           if (req.path === "/") {
-            result = await ReviewService.read(req.query);
+            let param = req.query;
+            if (!param.review_id) {
+              throw Error('review_id parameter required.');
+            }
+            result = await ReviewService.read(param.review_id);
           }
           else {
-            result = await ReviewService.read('/', '');
+            console.log(req.path.replace('/', ''));
+            result = await ReviewService.read(req.path.replace('/', ''));
           }
           res.status(200).json(result);
         } catch (e) {
@@ -26,7 +31,7 @@ module.exports = async function (routes) {
 
     route.post('/', async (req, res, next) => {
         try {
-            const result = await ReviewService.write(req.query);
+            let result = await ReviewService.write(req.query);
             res.status(201).json('Added review with id: ' + result);
         } catch (e) {
             const error = new Error('Wrong review info: ' + e.message);

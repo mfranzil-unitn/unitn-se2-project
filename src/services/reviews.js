@@ -15,9 +15,9 @@ async function write(review) {
     return ret;
 }
 
-async function read(filters) {
+async function read(rev_id) {
     // Change filters
-    const res =  await Review.getByPrimaryKey(filters.review_id);
+    const res =  await Review.getByPrimaryKey(rev_id);
     return res;
 }
 
