@@ -21,4 +21,3 @@ test('database must be closed properly', async () => {
   let res = await db.close();
   expect(res).toBe(true);
 });
-© 2019 GitHub, Inc.
