@@ -1,9 +1,14 @@
 const Review = require('@app/models/review');
 
-const UserService = require("@app/services/users");
+class MissingReviewError extends Error {
+  constructor(...args) {
+    super(...args)
+    Error.captureStackTrace(this, MissingReviewError)
+  }
+}
 
 async function write(review) {
-    if (!review) {
+    if (!review || review === undefined) {
         throw Error('Review parameter required.');
     }
 
@@ -17,13 +22,26 @@ async function write(review) {
     return res;
 }
 
-async function read(filters) {
-    // Change filters
-    const res =  await Review.getByPrimaryKey(filters.review_id);
+async function read(rev_id) {
+  let res;
+    if(parseInt(rev_id) !== NaN && rev_id >=0){
+       res =  await Review.getByPrimaryKey(rev_id);
+    }
+    if(res === undefined){
+      throw new MissingReviewError('Review with this review_id not found');
+    }
     return res;
 }
 
+async function getAll() {
+  const res =  await Review.getAll();
+  return res;
+}
+
+
 module.exports = {
+    MissingReviewError,
     write,
-    read
+    read,
+    getAll
 };
