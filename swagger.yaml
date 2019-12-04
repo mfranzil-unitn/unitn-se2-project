@@ -22,7 +22,7 @@ tags:
   description: "Find lines near a geolocalized point"
 - name: "user"
   description: "Operations about user"
-    
+
 schemes:
 - "https"
 - "http"
@@ -44,19 +44,19 @@ paths:
         description: "The userID of the current user"
         required: true
         type: "string"
-        
+
       - name: "line_start_lat"
         in: "query"
         description: "The latitude of the starting point of the line"
         required: true
         type: "number"
-        
+
       - name: "line_start_lon"
         in: "query"
         description: "The longitude of the starting point of the line"
         required: true
         type: "number"
-        
+
       - name: "line_end_lat"
         in: "query"
         description: "The latiude of the ending point of the line"
@@ -68,13 +68,13 @@ paths:
         description: "The longitude of the ending point of the line"
         required: true
         type: "number"
-        
+
       - name: "line_name"
         in: "query"
         description: "The name of the line"
         required: true
         type: "string"
-      
+
       - name: "line_description"
         in: "query"
         description: "A description of the line"
@@ -123,8 +123,72 @@ paths:
             $ref: "#/definitions/Line"
         400:
           description: "Error while getting Line"
-  
-          
+  /review:
+    post:
+      tags:
+        - "review"
+      summary: "Create new review"
+      description: "Create a new review (this can only be done by the logged in user)."
+      operationId: "createLine"
+        produces:
+          - "application/json"
+      parameters:
+        - name: "review_user_id"
+          in: "query"
+          description: "The userID of the current user"
+          required: true
+          type: "string"
+
+        - name: "review_line_id"
+            in: "query"
+            description: "The lineID of the line that's going to be reviewed"
+            required: true
+            type: "number"
+
+        - name: "review_rating"
+            in: "query"
+            description: "Line's rating"
+            required: true
+            type: "number"
+
+        - name: "review_description"
+            in: "query"
+            description: "Line's description "
+            required: true
+            type: "string"
+
+        responses:
+          201:
+            description: "successful operation, review created"
+          400:
+            description: "Wrong review info"
+
+
+  /review/{review_id}:
+    get:
+      tags:
+        - "review"
+      summary: "Get review by review_id"
+      description: ""
+      operationId: "getReviewByID"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "review_id"
+          in: "path"
+          description: "The review that needs to be fetched."
+          required: true
+          type: "number"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Review"
+        400:
+          description: "Error while getting Review"
+
+
+
 #  /user:
 #    post:
 #      tags:
@@ -324,7 +388,7 @@ securityDefinitions:
     type: "apiKey"
     name: "api_key"
     in: "header"
-    
+
 definitions:
   Line:
     type: "object"
@@ -350,7 +414,7 @@ definitions:
         type: "string"
       line_description:
         type: "string"
-        
+
     xml:
       name: "Line"
 externalDocs:
