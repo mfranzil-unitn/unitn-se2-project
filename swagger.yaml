@@ -129,9 +129,9 @@ paths:
         - "review"
       summary: "Create new review"
       description: "Create a new review (this can only be done by the logged in user)."
-      operationId: "createLine"
-        produces:
-          - "application/json"
+      operationId: "createreview"
+      produces:
+        - "application/json"
       parameters:
         - name: "review_user_id"
           in: "query"
@@ -140,52 +140,66 @@ paths:
           type: "string"
 
         - name: "review_line_id"
-            in: "query"
-            description: "The lineID of the line that's going to be reviewed"
-            required: true
-            type: "number"
+          in: "query"
+          description: "The lineID of the line that's going to be reviewed"
+          required: true
+          type: "number"
 
         - name: "review_rating"
-            in: "query"
-            description: "Line's rating"
-            required: true
-            type: "number"
+          in: "query"
+          description: "Line's rating"
+          required: true
+          type: "number"
 
         - name: "review_description"
-            in: "query"
-            description: "Line's description "
-            required: true
-            type: "string"
+          in: "query"
+          description: "Line's description "
+          required: true
+          type: "string"
 
-        responses:
-          201:
-            description: "successful operation, review created"
-          400:
-            description: "Wrong review info"
-
-
-  /review/{review_id}:
+      responses:
+        201:
+          description: "successful operation, review created"
+        400:
+          description: "Wrong review info"
     get:
       tags:
         - "review"
-      summary: "Get review by review_id"
+      summary: "Get all reviews"
       description: ""
-      operationId: "getReviewByID"
+      operationId: "getAllReviews"
       produces:
         - "application/json"
-      parameters:
-        - name: "review_id"
-          in: "path"
-          description: "The review that needs to be fetched."
-          required: true
-          type: "number"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Review"
-        400:
+        500:
           description: "Error while getting Review"
+
+    /review/{review_id}:
+      get:
+        tags:
+          - "review"
+        summary: "Get review by review_id"
+        description: ""
+        operationId: "getReviewByID"
+        produces:
+          - "application/json"
+        parameters:
+          - name: "review_id"
+            in: "path"
+            description: "The review that needs to be fetched."
+            required: true
+            type: "number"
+        responses:
+          200:
+            description: "successful operation"
+            schema:
+              $ref: "#/definitions/Review"
+          400:
+            description: "Error while getting Review"
 
 
 
@@ -414,9 +428,23 @@ definitions:
         type: "string"
       line_description:
         type: "string"
+  Review:
+    type: "object"
+    properties:
+      review_id:
+        type: "integer"
+        format: "int64"
+      review_user_id:
+        type: "string"
+      review_line_id:
+        type: "integer"
+        format: "int64"
+      review_rating:
+        type: "integer"
+        format: "int64"
+      review_description:
+        type: "string"
 
-    xml:
-      name: "Line"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
