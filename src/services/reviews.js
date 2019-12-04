@@ -16,7 +16,6 @@ async function write(review) {
 }
 
 async function read(rev_id) {
-    // Change filters
     const res =  await Review.getByPrimaryKey(rev_id);
     return res;
 }

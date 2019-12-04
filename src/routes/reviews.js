@@ -18,13 +18,16 @@ module.exports = async function (routes) {
             result = await ReviewService.read(param.review_id);
           }
           else {
-            console.log(req.path.replace('/', ''));
             result = await ReviewService.read(req.path.replace('/', ''));
+          }
+
+          if(!result){
+            throw Error('Invalid id');
           }
           res.status(200).json(result);
         } catch (e) {
             const error = new Error('Error while returning the review: ' + e.message);
-            error.httpStatusCode = 400;
+            error.status = 400;
             next(error);
         }
     });
@@ -34,8 +37,8 @@ module.exports = async function (routes) {
             let result = await ReviewService.write(req.query);
             res.status(201).json('Added review with id: ' + result);
         } catch (e) {
-            const error = new Error('Wrong review info: ' + e.message);
-            error.httpStatusCode = 400;
+            const error = new Error(' Error: ' + e.message);
+            error.status = 400;
             next(error);
         }
 
