@@ -7,10 +7,16 @@ const route = Router();
 module.exports = async function (routes) {
     routes.use('/review', route);
 
-    route.get('/', async (req, res, next) => {
+    route.get('/*', async (req, res, next) => {
         try {
-            const result = await ReviewService.read(req.query);
-            res.status(200).json(result);
+          let result;
+          if (req.path === "/") {
+            result = await ReviewService.read(req.query);
+          }
+          else {
+            result = await ReviewService.read('/', '');
+          }
+          res.status(200).json(result);
         } catch (e) {
             const error = new Error('Error while returning the review: ' + e.message);
             error.httpStatusCode = 400;
