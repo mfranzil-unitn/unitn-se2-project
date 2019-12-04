@@ -10,19 +10,13 @@ module.exports = async function (routes) {
     route.get('/*', async (req, res, next) => {
         try {
           let result;
-          if (req.path === "/") {
-            let param = req.query;
-            if (!param.review_id) {
-              throw Error('review_id parameter required.');
-            }
-            result = await ReviewService.read(param.review_id);
-          }
-          else {
+          if (req.path === '/') {
+            result = await ReviewService.getAll();
+          } else {
             result = await ReviewService.read(req.path.replace('/', ''));
-          }
-
-          if(!result){
-            throw Error('Invalid id');
+            if (!result) {
+              throw Error('Invalid format or id');
+            }
           }
           res.status(200).json(result);
         } catch (e) {
@@ -37,9 +31,12 @@ module.exports = async function (routes) {
             let result = await ReviewService.write(req.query);
             res.status(201).json('Added review with id: ' + result);
         } catch (e) {
-            const error = new Error(' Error: ' + e.message);
+          let error = new Error('Error while getting Review: ' + e.message);
+          if (e.constructor === ReviewService.MissingReviewError) {
+            error.status = 404;
+          } else {
             error.status = 400;
-            next(error);
+          }
         }
 
     });

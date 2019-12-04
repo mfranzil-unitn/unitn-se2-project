@@ -26,8 +26,9 @@ module.exports = {
                 parseFloat(review_rating), review_description);
             return res.rows[0].review_id;
         } catch (error) {
-            Logger.error(error.stack);
-            return -1;
+          throw new Error('Error in Insert');
+          console.log(error.stack);
+          return -1;
         }
     },
     update: async ({ review_id, review_user_id, review_line_id, review_rating, review_description }) => {
