@@ -5,14 +5,14 @@ const UserService = require('@app/services/users');
 const route = Router();
 
 module.exports = async function (routes) {
-    routes.use('/users', route);
+    routes.use('/signup', route);
 
-    route.get('/', async (req, res, next) => {
+    route.post('/', async (req, res, next) => {
         try {
-            const users = await UserService.find(req.query);
-            res.status(200).json(users);
+            await UserService.create(req.query);
+            res.status(200).json();
         } catch (e) {
-            const error = new Error('Failed to retrieve users: ' + e.message);
+            const error = new Error('Failed to create new user: ' + e.message);
             error.httpStatusCode = 400;
             next(error);
         }

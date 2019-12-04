@@ -38,6 +38,5 @@ module.exports = async function (routes) {
           let error = new Error('Error while getting Review: ' + e.message);
           next(error);
         }
-
     });
 };

@@ -16,7 +16,7 @@ function isFloat(value){
 }
 
 async function place(line) {
-    if (line === undefined) {
+    if (!line) {
         throw new Error('Line parameter required.');
     }
 
@@ -28,7 +28,8 @@ async function place(line) {
             + 'line_start_lat: Number, line_start_lon: Number, line_end_lat: Number, '
             + 'line_end_lon: Number, line_name: String, line_description: String}');
     }
-    await Line.insert(line);
+    let result = await Line.insert(line);
+    console.log(result);
 
     return;
 }
