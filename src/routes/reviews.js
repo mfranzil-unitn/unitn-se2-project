@@ -27,6 +27,5 @@ module.exports = async function (routes) {
             error.httpStatusCode = 400;
             next(error);
         }
-
     });
 };

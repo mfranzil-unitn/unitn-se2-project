@@ -7,7 +7,7 @@ async function retrieve(point) {
     const rad = 0.0013; /* Circa 0.1 km */
 
     if (!lat || !lon) {
-        throw new Error("Missing latitude or longitude");
+        throw Error("Missing latitude or longitude");
     }
 
     let existing_lines = await ServicesLine.getAll();

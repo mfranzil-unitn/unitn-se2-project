@@ -1,5 +1,7 @@
 const Review = require('@app/models/review');
 
+const UserService = require("@app/services/users");
+
 async function write(review) {
     if (!review) {
         throw Error('Review parameter required.');
@@ -10,9 +12,9 @@ async function write(review) {
             + 'review_line_id : Number, review_rating : Number, review_description: String }');
     }
 
-    let ret = await Review.insert(review);
+    let res = await Review.insert(review);
     console.log('Added new review');
-    return ret;
+    return res;
 }
 
 async function read(filters) {
