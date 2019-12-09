@@ -38,20 +38,20 @@ async function loader(app) {
     app.use((req, res, next) => {
         // When user is not logged in can access
         // only login and signup page
-        if (req.path !== '/api/login' && req.path !== '/api/signup') {
+        if (req.path !== config.api.prefix + '/login' && req.path !== config.api.prefix + '/signup') {
             try {
-                Logger.info("Logged with UserID: " + auth.isAuth(req));
-                
                 // If there are no token you are not logged
                 if (auth.isAuth(req) == undefined) {
                     const err = new Error('Please Login first');
                     err['status'] = 401;
                     next(err);
+                } else {
+                    Logger.info("Logged with UserID: " + auth.isAuth(req));
                 }
             }
             catch (e) {
                 const error = new Error(e.message);
-                
+
                 // If LoginError -> expired or wrong token
                 if (e.constructor === auth.LoginError) {
                     err['status'] = 403;

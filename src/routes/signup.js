@@ -10,7 +10,7 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             await UserService.create(req.query);
-            res.status(200).json();
+            res.status(201).json();
         } catch (e) {
             const error = new Error('Failed to create new user: ' + e.message);
             error.httpStatusCode = 400;

@@ -13,7 +13,7 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             await UserService.authenticate(req.query);
-            
+
             // Create a temporary token for auth 
             // if auth with db was successful
             let username = req.query.user_id;

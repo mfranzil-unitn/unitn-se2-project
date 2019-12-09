@@ -52,9 +52,9 @@ async function create(user) {
 
 async function find(query) {
     if (!query) {
-        throw Error('Please supply an array of IDS, or an empty array.')
-    } else if (Object.entries(query).length === 0 && query.constructor === Array) {
-        let users = await User.getAll();
+        throw Error('Please supply an array of IDS, or an Object containing limit and offset.')
+    } else if (!!query.limit && !!query.offset) {
+        let users = await User.getAll(query.limit, query.offset);
 
         for (element of users) {
             delete element['user_hash'];
@@ -62,10 +62,10 @@ async function find(query) {
         }
 
         return users;
-    } else if (Object.entries(query).length > 0 && query.constructor === Array) {
+    } else if (query.length >= 0 && query.constructor === Array) {
         let users = [];
         for (element of query) {
-            let user = await User.getByPrimaryKey();
+            let user = await User.getByPrimaryKey(element);
             if (typeof user !== "undefined") {
                 delete user['user_hash'];
                 delete user['user_salt'];
@@ -74,15 +74,16 @@ async function find(query) {
                 users.push(undefined);
             }
         }
+        return users;
     } else {
-        let user = await User.getByPrimaryKey();
+        let user = await User.getByPrimaryKey(query);
         if (typeof user !== "undefined") {
             delete user['user_hash'];
             delete user['user_salt'];
         } else {
             throw Error('Cannot find User.');
         }
-
+        return user;
     }
 }
 

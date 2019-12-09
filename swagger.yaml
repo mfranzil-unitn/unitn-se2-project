@@ -1,483 +1,349 @@
-swagger: "2.0"
+openapi: 3.0.1
 info:
-  description: "SlackApp is  an application that proposes to create a virtual space for [slackliners](https://en.wikipedia.org/wiki/Slacklining) where they can share their slackline position with other members, along with rating and reviewing them on a map."
-  version: "0.0.1"
-  title: "SlackApp"
-  termsOfService: "http://swagger.io/terms/"#??????????????????
-  contact:
-    email: "simone.nascivera@gmail.com"#?
+  title: SlackApp
+  description: SlackApp is an application that proposes to create a virtual space
+    for [slackliners](https://en.wikipedia.org/wiki/Slacklining) where they can share
+    their slackline position with other members, along with rating and reviewing them
+    on a map.
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "asdasdadad"
-basePath: "/api"
-
-# All the tags (http://yyyy/api/tags)
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "1"
+servers:
+- url: http://my-sample.server.com/api/v1
+- url: https://my-sample.server.com/api/v1
 tags:
-- name: "line"
-  description: "All informations regarding all lines"
-- name: "review"
-  description: "Create or visualize review of a line"
-- name: "retrive"
-  description: "Find lines near a geolocalized point"
-- name: "user"
-  description: "Operations about user"
-
-schemes:
-- "https"
-- "http"
-
-
+- name: line
+  description: APIs for creating and retrieving lines
+- name: review
+  description: APIs for creating and retrieving reviews
+- name: users
+  description: APIs for retrieving users
+- name: auth
+  description: APIs for creating new users and authenticating to the system
 paths:
-  /line:
-    post:
-      tags:
-      - "line"
-      summary: "Create new geolocalized line"
-      description: "This can only be done by the logged in user."
-      operationId: "createLine"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "line_user_id"
-        in: "query"
-        description: "The userID of the current user"
-        required: true
-        type: "string"
-
-      - name: "line_start_lat"
-        in: "query"
-        description: "The latitude of the starting point of the line"
-        required: true
-        type: "number"
-
-      - name: "line_start_lon"
-        in: "query"
-        description: "The longitude of the starting point of the line"
-        required: true
-        type: "number"
-
-      - name: "line_end_lat"
-        in: "query"
-        description: "The latiude of the ending point of the line"
-        required: true
-        type: "number"
-
-      - name: "line_end_lon"
-        in: "query"
-        description: "The longitude of the ending point of the line"
-        required: true
-        type: "number"
-
-      - name: "line_name"
-        in: "query"
-        description: "The name of the line"
-        required: true
-        type: "string"
-
-      - name: "line_description"
-        in: "query"
-        description: "A description of the line"
-        required: true
-        type: "string"
-
-      responses:
-        200:
-          description: "successful operation"
-        400:
-          description: "Wrong line info"
+  /users:
     get:
       tags:
-      - "line"
-      summary: "Get all lines"
-      description: ""
-      operationId: "getAllLines"
-      produces:
-      - "application/json"
+      - users
+      summary: Retrieves one or more users from the system.
+      operationId: users
+      parameters:
+      - name: user_id
+        in: query
+        description: The userID to query the system with, or a comma-separated value
+          of userIDs
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The maximum number of elements to be returned. Required if user_id
+          is not present
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: The offset from where to start querying the elements. Required
+          if user_id is not present
+        schema:
+          type: integer
       responses:
         200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Line"
+          description: A User object if a single userID was requested, or an array of Users.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  
+  /signup:
+    post:
+      tags:
+      - auth
+      summary: Creates a new user in the system.
+      operationId: signup
+      parameters:
+      - name: user_id
+        in: query
+        description: The userID to log in with
+        required: true
+        schema:
+          type: string
+      - name: user_name
+        in: query
+        description: The displayed name for the user
+        required: true
+        schema:
+          type: string
+      - name: user_password
+        in: query
+        description: The password matching the userID
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: User successfully created
+          content: {}
+        400:
+          description: Bad request (invalid number of parameters or content)
+          content: {}
+  /login:
+    post:
+      tags:
+      - auth
+      summary: Authenticates an user using ID and password.
+      operationId: login
+      parameters:
+      - name: user_id
+        in: query
+        description: The userID to log in with
+        required: true
+        schema:
+          type: string
+      - name: user_password
+        in: query
+        description: The password matching the userID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: User successfully logged in
+          content: {}
+        400:
+          description: Non-existant combination of userID and password, or invalid parameters
+          content: {}
+  /line:
+    get:
+      tags:
+      - line
+      summary: Get all lines
+      operationId: getAllLines
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Line'
         500:
-          description: "Error while getting Line"
+          description: Error while getting Line
+          content: {}
+    post:
+      tags:
+      - line
+      summary: Create new geolocalized line
+      description: This can only be done by the logged in user.
+      operationId: createLine
+      parameters:
+      - name: line_user_id
+        in: query
+        description: The userID of the current user
+        required: true
+        schema:
+          type: string
+      - name: line_start_lat
+        in: query
+        description: The latitude of the starting point of the line
+        required: true
+        schema:
+          type: number
+      - name: line_start_lon
+        in: query
+        description: The longitude of the starting point of the line
+        required: true
+        schema:
+          type: number
+      - name: line_end_lat
+        in: query
+        description: The latiude of the ending point of the line
+        required: true
+        schema:
+          type: number
+      - name: line_end_lon
+        in: query
+        description: The longitude of the ending point of the line
+        required: true
+        schema:
+          type: number
+      - name: line_name
+        in: query
+        description: The name of the line
+        required: true
+        schema:
+          type: string
+      - name: line_description
+        in: query
+        description: A description of the line
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: Wrong line info
+          content: {}
   /line/{lineID}:
     get:
       tags:
-      - "line"
-      summary: "Get line by lineID"
-      description: ""
-      operationId: "getLineByID"
-      produces:
-      - "application/json"
+      - line
+      summary: Get line by lineID
+      operationId: getLineByID
       parameters:
-      - name: "lineID"
-        in: "path"
-        description: "The line that needs to be fetched."
+      - name: lineID
+        in: path
+        description: The line that needs to be fetched.
         required: true
-        type: "number"
+        schema:
+          type: number
       responses:
         200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Line"
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Line'
         400:
-          description: "Error while getting Line"
+          description: Error while getting Line
+          content: {}
         404:
-          description: "Line with provided LineID not found"
-
-
-  /retrieve:
+          description: Line with provided LineID not found
+          content: {}
+  /review:
     get:
       tags:
-        - "line"
-      summary: "Retrieve nearby lines"
-      description: "Given latitude and longitude, this function retrieves lines within a certain radius of 0.1 km"
-      operationId: "retrieveline"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "selected_latitude"
-          in: "query"
-          description: "The latitude of the point of interest"
-          required: true
-          type: "number"
-        - name: "selected_longitude"
-          in: "query"
-          description: "The longitude of the point of interest"
-          required: true
-          type: "number"
+      - review
+      summary: Get all reviews
+      operationId: getAllReviews
       responses:
-        201:
-          description: "Successfull operation, retrieving nearby lines..."
-        400:
-          description: "Wrong request"
-      
-
-  /review:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        500:
+          description: Error while getting Review
+          content: {}
     post:
       tags:
-        - "review"
-      summary: "Create new review"
-      description: "Create a new review (this can only be done by the logged in user)."
-      operationId: "createreview"
-      produces:
-        - "application/json"
+      - review
+      summary: Create new review
+      description: Create a new review (this can only be done by the logged in user).
+      operationId: createReview
       parameters:
-        - name: "review_user_id"
-          in: "query"
-          description: "The userID of the current user"
-          required: true
-          type: "string"
-
-        - name: "review_line_id"
-          in: "query"
-          description: "The lineID of the line that's going to be reviewed"
-          required: true
-          type: "number"
-
-        - name: "review_rating"
-          in: "query"
-          description: "Line's rating"
-          required: true
-          type: "number"
-
-        - name: "review_description"
-          in: "query"
-          description: "Line's description "
-          required: true
-          type: "string"
-
+      - name: review_user_id
+        in: query
+        description: The userID of the current user
+        required: true
+        schema:
+          type: string
+      - name: review_line_id
+        in: query
+        description: The lineID of the line that's going to be reviewed
+        required: true
+        schema:
+          type: number
+      - name: review_rating
+        in: query
+        description: Line's rating
+        required: true
+        schema:
+          type: number
+      - name: review_description
+        in: query
+        description: 'Line''s description '
+        required: true
+        schema:
+          type: string
       responses:
         201:
-          description: "successful operation, review created"
+          description: successful operation, review created
+          content: {}
         400:
-          description: "Wrong review info"
+          description: Wrong review info
+          content: {}
+  /review/{review_id}:
     get:
       tags:
-        - "review"
-      summary: "Get all reviews"
-      description: ""
-      operationId: "getAllReviews"
-      produces:
-        - "application/json"
+      - review
+      summary: Get review by review_id
+      operationId: getReviewByID
+      parameters:
+      - name: review_id
+        in: path
+        description: The review that needs to be fetched.
+        required: true
+        schema:
+          type: number
       responses:
         200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Review"
-        500:
-          description: "Error while getting Review"
-
-  /review/{review_id}:
-      get:
-        tags:
-          - "review"
-        summary: "Get review by review_id"
-        description: ""
-        operationId: "getReviewByID"
-        produces:
-          - "application/json"
-        parameters:
-          - name: "review_id"
-            in: "path"
-            description: "The review that needs to be fetched."
-            required: true
-            type: "number"
-        responses:
-          200:
-            description: "successful operation"
-            schema:
-              $ref: "#/definitions/Review"
-          400:
-            description: "Error while getting Review"
-          404:
-            description: "Review with provided ReviewID not found"
-
-
-
-#  /user:
-#    post:
-#      tags:
-#      - "user"
-#      summary: "Create user"
-#      description: "This can only be done by the logged in user."
-#      operationId: "createUser"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - in: "body"
-#        name: "body"
-#        description: "Created user object"
-#        required: true
-#        schema:
-#          $ref: "#/definitions/User"
-#      responses:
-#        default:
-#          description: "successful operation"
-#  /user/createWithArray:
-#    post:
-#      tags:
-#      - "user"
-#      summary: "Creates list of users with given input array"
-#      description: ""
-#      operationId: "createUsersWithArrayInput"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - in: "body"
-#        name: "body"
-#        description: "List of user object"
-#        required: true
-#        schema:
-#          type: "array"
-#          items:
-#            $ref: "#/definitions/User"
-#      responses:
-#        default:
-#          description: "successful operation"
-#  /user/createWithList:
-#    post:
-#      tags:
-#      - "user"
-#      summary: "Creates list of users with given input array"
-#      description: ""
-#      operationId: "createUsersWithListInput"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - in: "body"
-#        name: "body"
-#        description: "List of user object"
-#        required: true
-#        schema:
-#          type: "array"
-#          items:
-#            $ref: "#/definitions/User"
-#      responses:
-#        default:
-#          description: "successful operation"
-#  /user/login:
-#    get:
-#      tags:
-#      - "user"
-#      summary: "Logs user into the system"
-#      description: ""
-#      operationId: "loginUser"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - name: "username"
-#        in: "query"
-#        description: "The user name for login"
-#        required: true
-#        type: "string"
-#      - name: "password"
-#        in: "query"
-#        description: "The password for login in clear text"
-#        required: true
-#        type: "string"
-#      responses:
-#        200:
-#          description: "successful operation"
-#          schema:
-#            type: "string"
-#          headers:
-#            X-Rate-Limit:
-#              type: "integer"
-#              format: "int32"
-#              description: "calls per hour allowed by the user"
-#            X-Expires-After:
-#              type: "string"
-#              format: "date-time"
-#              description: "date in UTC when token expires"
-#        400:
-#          description: "Invalid username/password supplied"
-#  /user/logout:
-#    get:
-#      tags:
-#      - "user"
-#      summary: "Logs out current logged in user session"
-#      description: ""
-#      operationId: "logoutUser"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters: []
-#      responses:
-#        default:
-#          description: "successful operation"
-#  /user/{username}:
-#    get:
-#      tags:
-#      - "user"
-#      summary: "Get user by user name"
-#      description: ""
-#      operationId: "getUserByName"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - name: "username"
-#        in: "path"
-#        description: "The name that needs to be fetched. Use user1 for testing. "
-#        required: true
-#        type: "string"
-#      responses:
-#        200:
-#          description: "successful operation"
-#          schema:
-#            $ref: "#/definitions/User"
-#        400:
-#          description: "Invalid username supplied"
-#        404:
-#          description: "User not found"
-#    put:
-#      tags:
-#      - "user"
-#      summary: "Updated user"
-#      description: "This can only be done by the logged in user."
-#      operationId: "updateUser"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - name: "username"
-#        in: "path"
-#        description: "name that need to be updated"
-#        required: true
-#        type: "string"
-#      - in: "body"
-#        name: "body"
-#        description: "Updated user object"
-#        required: true
-#        schema:
-#          $ref: "#/definitions/User"
-#      responses:
-#        400:
-#          description: "Invalid user supplied"
-#        404:
-#          description: "User not found"
-#    delete:
-#      tags:
-#      - "user"
-#      summary: "Delete user"
-#      description: "This can only be done by the logged in user."
-#      operationId: "deleteUser"
-#      produces:
-#      - "application/xml"
-#      - "application/json"
-#      parameters:
-#      - name: "username"
-#        in: "path"
-#        description: "The name that needs to be deleted"
-#        required: true
-#        type: "string"
-#      responses:
-#        400:
-#          description: "Invalid username supplied"
-#        404:
-#          description: "User not found"
-
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-
-definitions:
-  Line:
-    type: "object"
-    properties:
-      line_id:
-        type: "integer"
-        format: "int64"
-      line_user_id:
-        type: "string"
-      line_start_lat:
-        type: "number"
-        format: "float"
-      line_start_lon:
-        type: "number"
-        format: "float"
-      line_end_lat:
-        type: "number"
-        format: "float"
-      line_end_lon:
-        type: "number"
-        format: "float"
-      line_name:
-        type: "string"
-      line_description:
-        type: "string"
-  Review:
-    type: "object"
-    properties:
-      review_id:
-        type: "integer"
-        format: "int64"
-      review_user_id:
-        type: "string"
-      review_line_id:
-        type: "integer"
-        format: "int64"
-      review_rating:
-        type: "integer"
-        format: "int64"
-      review_description:
-        type: "string"
-
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        400:
+          description: Error while getting Review
+          content: {}
+        404:
+          description: Review with provided ReviewID not found
+          content: {}
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        user_name:
+          type: string
+        user_rank:
+          type: integer
+          format: int64
+    Line:
+      type: object
+      properties:
+        line_id:
+          type: integer
+          format: int64
+        line_user_id:
+          type: string
+        line_start_lat:
+          type: number
+          format: float
+        line_start_lon:
+          type: number
+          format: float
+        line_end_lat:
+          type: number
+          format: float
+        line_end_lon:
+          type: number
+          format: float
+        line_name:
+          type: string
+        line_description:
+          type: string
+    Review:
+      type: object
+      properties:
+        review_id:
+          type: integer
+          format: int64
+        review_user_id:
+          type: string
+        review_line_id:
+          type: integer
+          format: int64
+        review_rating:
+          type: integer
+          format: int64
+        review_description:
+          type: string

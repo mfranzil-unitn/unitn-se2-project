@@ -1,6 +1,8 @@
 const db = require('.');
 const Logger = require('@app/loaders/logger');
 
+// jwt / express-jwt
+
 const queries = {
     insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank, user_name)"
         + " VALUES ($1, $2, $3, $4, $5)",
@@ -9,6 +11,7 @@ const queries = {
     delete: "DELETE FROM user_ WHERE user_id = $1;",
     getByPrimaryKey: "SELECT * FROM user_ WHERE user_id = $1",
     getAll: "SELECT * FROM user_;",
+    getAllLimited: "SELECT * FROM user_ LIMIT $1 OFFSET $2;",
     getCount: "SELECT COUNT(*) FROM user_;"
 };
 
@@ -51,9 +54,14 @@ module.exports = {
             return undefined;
         }
     },
-    getAll: async () => {
+    getAll: async (limit, offset) => {
         try {
-            let res = await db.executeQuery(queries.getAll);
+            let res = undefined;
+            if (!!limit && !!offset) {
+                res = await db.executeQuery(queries.getAllLimited, limit, offset);
+            } else {
+                res = await db.executeQuery(queries.getAll);
+            }
             return res.rows;
         } catch (error) {
             Logger.error(error.stack);

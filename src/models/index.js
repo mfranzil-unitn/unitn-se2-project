@@ -36,14 +36,14 @@ module.exports = {
             res = await client.query(query);
             const duration = Date.now() - start;
             await client.query('COMMIT');
-            Logger.info("Query executed", { query: query, duration: duration });
+            Logger.info("Query executed: %o", { query: query, duration: duration });
         } catch (error) {
             await client.query('ROLLBACK');
             client.release();
-            Logger.error("Failed to execute query", { query: query, error: error.stack });
+            Logger.error("Failed to execute query: %o", { query: query, error: error.stack });
         }
 
-        await client.end()
+        await client.end();
         return res;
     },
     close: async () => {
@@ -52,7 +52,7 @@ module.exports = {
                 pool.end();
                 return true;
             } catch (error) {
-                Logger.error("Failed to properly close connection pool.", { error: error.stack });
+                Logger.error("Failed to properly close connection pool: %o", { error: error.stack });
                 return false;
             }
         }

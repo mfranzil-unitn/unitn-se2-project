@@ -9,6 +9,7 @@ const retrieve = require('./retrieve_nearby_lines');
 
 module.exports = () => {
     const routes = Router();
+    
     users(routes);
     login(routes);
     signup(routes);

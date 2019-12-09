@@ -9,8 +9,8 @@ module.exports = async function (routes) {
 
     route.post('/', async (req, res, next) => {
         try {
-            await PlaceLineService.place(req.query);
-            res.status(200).end();
+            let result = await PlaceLineService.place(req.query);
+            res.status(201).json('Added review with id: ' + result);
         } catch (e) {
             const error = new Error('Wrong line info: ' + e.message);
             console.log(e);
