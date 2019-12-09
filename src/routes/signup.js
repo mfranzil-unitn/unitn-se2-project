@@ -13,7 +13,7 @@ module.exports = async function (routes) {
             res.status(201).json();
         } catch (e) {
             const error = new Error('Failed to create new user: ' + e.message);
-            error.httpStatusCode = 400;
+            error.status = 400;
             next(error);
         }
     });
