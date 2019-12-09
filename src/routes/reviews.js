@@ -1,14 +1,14 @@
 const { Router } = require('express');
 
+const multer = require('multer');
+const upload = multer({dest: 'uploads/'});
+
 const ReviewService = require('@app/services/reviews');
 
 const route = Router();
 
 module.exports = async function (routes) {
-  /*
-    route.use(bodyParser.urlencoded({extended:true}));
-    route.use(bodyParser.json());
-    */
+
 
     routes.use('/review', route);
 
@@ -35,15 +35,15 @@ module.exports = async function (routes) {
         }
     });
 
-    route.post('/'/*, bodyParser*/, async (req, res, next) => {
+    route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
             console.log("Header ---")
             console.log(req.query);
             console.log("--- FINE HEADER\nINIZIO BODY ---");
-            console.log(req.files.image);
+            console.log(req.file);
             console.log("--- FINE BODY\n");
             let result = await ReviewService.write(req.query);
-            res.status(201).json('Added review with id: ' + result);
+            res.status(201).json('Added review with id: ' + result + ' And an image with  name:'  + req.file.filename);
         } catch (e) {
           let error = new Error('Error while getting Review: ' + e.message);
           next(error);
