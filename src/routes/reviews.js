@@ -5,6 +5,11 @@ const ReviewService = require('@app/services/reviews');
 const route = Router();
 
 module.exports = async function (routes) {
+  /*
+    route.use(bodyParser.urlencoded({extended:true}));
+    route.use(bodyParser.json());
+    */
+
     routes.use('/review', route);
 
     route.get('/*', async (req, res, next) => {
@@ -30,8 +35,13 @@ module.exports = async function (routes) {
         }
     });
 
-    route.post('/', async (req, res, next) => {
+    route.post('/'/*, bodyParser*/, async (req, res, next) => {
         try {
+            console.log("Header ---")
+            console.log(req.query);
+            console.log("--- FINE HEADER\nINIZIO BODY ---");
+            console.log(req.files.image);
+            console.log("--- FINE BODY\n");
             let result = await ReviewService.write(req.query);
             res.status(201).json('Added review with id: ' + result);
         } catch (e) {
