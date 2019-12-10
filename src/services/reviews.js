@@ -1,4 +1,5 @@
 const Review = require('@app/models/review');
+const Photo = require('@app/models/photo');
 
 class MissingReviewError extends Error {
   constructor(...args) {
@@ -7,7 +8,7 @@ class MissingReviewError extends Error {
   }
 }
 
-async function write(review) {
+async function write(review, path) {
     if (!review || review === undefined) {
         throw Error('Review parameter required.');
     }
@@ -18,7 +19,15 @@ async function write(review) {
     }
 
     let res = await Review.insert(review);
+
     console.log('Added new review');
+    if(path){
+        let pic ={};
+        pic.photo_review_id = res;
+        pic.photo_path = path;
+        let insert_id = await Photo.insert(pic);
+        console.log('Added photo for review: ' + res + ' with id: ' + insert_id);
+    }
     return res;
 }
 

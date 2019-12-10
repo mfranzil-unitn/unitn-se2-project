@@ -4,17 +4,10 @@ const multer = require('multer');
 const upload = multer({dest: 'uploads/'});
 
 const ReviewService = require('@app/services/reviews');
-
 const route = Router();
 
 module.exports = async function (routes) {
-<<<<<<< HEAD
   routes.use('/review', route);
-=======
-
-
-    routes.use('/review', route);
->>>>>>> 9cfe7d6de4c17b95faa0c137aeb01f57276000c0
 
   route.get('/*', async (req, res, next) => {
     try {
@@ -41,12 +34,8 @@ module.exports = async function (routes) {
 
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
-            console.log("Header ---")
-            console.log(req.query);
-            console.log("--- FINE HEADER\nINIZIO BODY ---");
-            console.log(req.file);
-            console.log("--- FINE BODY\n");
-            let result = await ReviewService.write(req.query);
+            const photo_path = req.file.path
+            let result = await ReviewService.write(req.query, photo_path);
             res.status(201).json('Added review with id: ' + result + ' And an image with  name:'  + req.file.filename);
         } catch (e) {
           let error = new Error('Error while getting Review: ' + e.message);

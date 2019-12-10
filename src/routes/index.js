@@ -7,6 +7,7 @@ const users = require('./users');
 const lines = require('./lines');
 const reviews = require('./reviews');
 const retrieve = require('./retrieve_nearby_lines');
+const photo = require('./photos');
 
 module.exports = () => {
     const routes = Router();
@@ -17,6 +18,7 @@ module.exports = () => {
     lines(routes);
     reviews(routes);
     retrieve(routes);
+    photo(routes);
 
     return routes;
 };
