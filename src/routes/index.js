@@ -1,13 +1,13 @@
 const { Router } = require('express');
 
-const login = require('./login');
-const signup = require('./signup');
-const middlewares = require('./middlewares/index');
-const users = require('./users');
-const lines = require('./lines');
-const reviews = require('./reviews');
-const retrieve = require('./retrieve_nearby_lines');
-const photo = require('./photos');
+const login = require('@app/routes/login');
+const signup = require('@app/routes/signup');
+const middlewares = require('@app/routes/middlewares');
+const users = require('@app/routes/users');
+const lines = require('@app/routes/lines');
+const reviews = require('@app/routes/reviews');
+const retrieve = require('@app/routes/retrieveNearbyLines');
+const photo = require('@app/routes/photos');
 
 module.exports = () => {
     const routes = Router();

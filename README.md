@@ -2,7 +2,7 @@
 
 The following is a repository for the Software Engineering 2 exam project (UniTN).
 
-The full documentation and setup information can be found on the [wiki](./wiki).
+The full documentation and setup information can be found on the [wiki](https://github.com/mfranzil/SE2Project/wiki).
 
 ## Members
 

@@ -1,4 +1,4 @@
-const db = require('.');
+const db = require('@app/models');
 
 const queries = {
     insert: "INSERT INTO line (line_user_id, line_start_lat,"
