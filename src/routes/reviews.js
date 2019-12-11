@@ -1,7 +1,21 @@
 const { Router } = require('express');
 
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
+const crypto = require('crypto');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return cb(err)
+
+      cb(null, raw.toString('hex') + path.extname(file.originalname))
+    })
+  }
+})
+
+const upload = multer({ storage: storage });
 
 const ReviewService = require('@app/services/reviews');
 const route = Router();
@@ -38,7 +52,7 @@ module.exports = async function (routes) {
             let result = await ReviewService.write(req.query, photo_path);
             res.status(201).json('Added review with id: ' + result + ' And an image with  name:'  + req.file.filename);
         } catch (e) {
-          let error = new Error('Error while getting Review: ' + e.message);
+          let error = new Error('Error while inserting Review: ' + e.message);
           error.status = 400;
           next(error);
         }

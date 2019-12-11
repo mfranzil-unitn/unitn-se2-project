@@ -1,7 +1,22 @@
 const { Router } = require('express');
 
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
+const crypto = require('crypto');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return cb(err)
+
+      cb(null, raw.toString('hex') + path.extname(file.originalname))
+    })
+  }
+})
+
+const upload = multer({ storage: storage });
+
 
 const PhotoService = require('@app/services/photos');
 const route = Router();
