@@ -23,8 +23,18 @@ module.exports = async function (routes) {
         let result;
 
         if (req.path === "/") {
-            result = await PlaceLineService.getAll();
-            res.status(200).json(result);
+            try {
+                result = await PlaceLineService.getAll(req.query);
+                res.status(200).json(result);
+            } catch (e) {
+                const error = new Error('Error while getting Lines: ' + e.message);
+                if (e.constructor === PlaceLineService.MissingLineError) {
+                    error.status = 404;
+                } else {
+                    error.status = 400;
+                }
+                next(error);
+            }
         }
         else {
             try {

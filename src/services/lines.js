@@ -15,6 +15,10 @@ function isFloat(value){
     }
 }
 
+function isInteger(value){
+    return value.match(/^[0-9]+$/) != null;
+}
+
 async function place(line) {
     if (!line) {
         throw new Error('Line parameter required.');
@@ -34,9 +38,20 @@ async function place(line) {
     return;
 }
 
-async function getAll() {
-    let res = await Line.getAll();
-    return res;
+async function getAll(query) {
+    if(!query || !query.limit || !query.offset || !isInteger(query.limit) || !isInteger(query.offset)){
+        throw new Error("Please specify limit and offset first as integers");
+    } 
+    let res = await Line.getAll(query.limit, query.offset);
+    let count_res = await Line.getCount();
+    
+    let detailed_res = {
+        "results" : res,
+        "metadata" : {
+            "total" : count_res[0].count
+        }
+    }
+    return detailed_res;
 }
 
 async function get(id) {

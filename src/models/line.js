@@ -10,6 +10,7 @@ const queries = {
     delete: "DELETE FROM line WHERE line_id = $1;",
     getByPrimaryKey: "SELECT * FROM line WHERE line_id = $1;",
     getAll: "SELECT * FROM line;",
+    getAllLimited: "SELECT * FROM line LIMIT $1 OFFSET $2;",
     getCount: "SELECT COUNT(*) FROM line;"
 };
 
@@ -59,12 +60,17 @@ module.exports = {
             return undefined;
         }
     },
-    getAll: async () => {
+    getAll: async (limit, offset) => {
         try {
-            let res = await db.executeQuery(queries.getAll);
+            let res = undefined;
+            if (!!limit && !!offset) {
+                res = await db.executeQuery(queries.getAllLimited, limit, offset);
+            } else {
+                res = await db.executeQuery(queries.getAll);
+            }
             return res.rows;
         } catch (error) {
-            console.log(error.stack);
+            Logger.error(error.stack);
             return undefined;
         }
     },
