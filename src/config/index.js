@@ -1,7 +1,7 @@
 const path = require('path');
 const dotenv = require('dotenv');
 
-if (!process.env.TRAVIS) {
+if (!process.env.TRAVIS || !process.env.HEROKU) {
     // Set the NODE_ENV to 'development' by default
     process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
