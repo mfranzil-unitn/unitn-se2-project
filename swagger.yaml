@@ -295,6 +295,32 @@ paths:
         404:
           description: Review with provided ReviewID not found
           content: {}
+  /retrieve:
+    get:
+      tags:
+        - "line"
+      summary: "Retrieve nearby lines"
+      description: "Given latitude and longitude, this function retrieves lines within a certain radius of 0.1 km"
+      operationId: "retrieveline"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "selected_latitude"
+          in: "query"
+          description: "The latitude of the point of interest"
+          required: true
+          type: "number"
+        - name: "selected_longitude"
+          in: "query"
+          description: "The longitude of the point of interest"
+          required: true
+          type: "number"
+      responses:
+        201:
+          description: "Successfull operation, retrieving nearby lines..."
+        400:
+          description: "Wrong request"
+
 components:
   schemas:
     User:
