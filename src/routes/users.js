@@ -9,7 +9,6 @@ module.exports = async function (routes) {
 
     route.get('/', async (req, res, next) => {
         let query = req.query;
-        console.log(query);
 
         if (!!query.user_id) {
             if (query.user_id.includes(",")) {
@@ -22,7 +21,6 @@ module.exports = async function (routes) {
                 query = query.user_id;
             }
         }
-        console.log(query);
 
         try {
             const users = await UserService.find(query);

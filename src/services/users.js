@@ -60,8 +60,15 @@ async function find(query) {
             delete element['user_hash'];
             delete element['user_salt'];
         }
+        let count_res = await User.getCount();
 
-        return users;
+        let detailed_res = {
+            "results": users,
+            "metadata": {
+                "total": count_res[0].count
+            }
+        }
+        return detailed_res;
     } else if (query.length >= 0 && query.constructor === Array) {
         let users = [];
         for (element of query) {
@@ -81,6 +88,7 @@ async function find(query) {
             delete user['user_hash'];
             delete user['user_salt'];
         } else {
+            //TODO more precise error
             throw Error('Cannot find User.');
         }
         return user;
