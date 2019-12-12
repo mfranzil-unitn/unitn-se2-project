@@ -148,7 +148,7 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
                   results:
                     type: array
                     items:
@@ -160,7 +160,7 @@ paths:
                         type: integer
         401:
           description: Unauthorized
-          content: {} 
+          content: {}
         500:
           description: Error while getting Line
           content: {}
@@ -222,8 +222,8 @@ paths:
           content: {}
         401:
           description: Unauthorized
-          content: {} 
-          
+          content: {}
+
   /lines/{lineID}:
     get:
       tags:
@@ -249,12 +249,12 @@ paths:
           content: {}
         401:
           description: Unauthorized
-          content: {} 
+          content: {}
         404:
           description: Line with provided LineID not found
           content: {}
 
-
+#Review's Section
   /review:
     get:
       tags:
