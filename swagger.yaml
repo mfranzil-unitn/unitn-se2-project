@@ -316,11 +316,11 @@ paths:
         schema:
           type: string
       - name: review_image
-        in: body
+        in: query
         description: Line's picture
         required: false
         schema:
-            type: jpeg/png/gif
+            type: object
       responses:
         201:
           description: successful operation, review created
