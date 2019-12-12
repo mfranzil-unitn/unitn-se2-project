@@ -259,7 +259,7 @@ paths:
     get:
       tags:
       - review
-      summary: Get all reviews
+      summary: Get all reviews (without image path).
       operationId: getAllReviews
       parameters:
           - name: limit
@@ -280,7 +280,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                type: array
+                  items:
+                    $ref: '#/components/schemas/Review'
         500:
           description: Error while getting Review. Internal Error.
           content: {}
@@ -332,7 +334,7 @@ paths:
     get:
       tags:
       - review
-      summary: Get review by review_id, if any photo is associated to it, it will also add a photo_path parameter.
+      summary: Get review by review_id, if any photo is associated to it, it will also show the path for those pictures.
       operationId: getReviewByID
       parameters:
       - name: review_id
@@ -347,9 +349,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                    - $ref: '#/components/schemas/Review'
-                    - $ref: '#/components/schemas/Review_With_Photo_Path'
+                $ref: '#/components/schemas/Review_With_Photo_Path'
         400:
           description: Error while getting Review. Review_Id not provided.
           content: {}

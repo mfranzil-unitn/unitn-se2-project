@@ -40,7 +40,7 @@ module.exports = async function (routes) {
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
             if(!req.file){
-                throw Error('Please provide a file');
+                throw Error('Please provide an image');
             }
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);

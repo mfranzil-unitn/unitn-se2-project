@@ -49,6 +49,9 @@ async function read(rev_id) {
         if(res2) {
             res.review_photo_path = res2.photo_path;
         }
+        else{
+            res.review_photo_path = 'No photo provided';
+        }
     } else if (typeof res === "undefined") {
         throw new MissingReviewError('Review with this review_id not found.');
     }
