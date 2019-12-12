@@ -75,7 +75,16 @@ module.exports = {
     getPathByReviewId: async(review_id) =>{
         try{
             let res = await db.executeQuery(queries.getByReviewId, parseInt(review_id));
-            return res.rows[0].photo_path;
+            let allPaths = "";
+            for (let i=0; i<res.rowCount; i++) {
+                allPaths += res.rows[i].photo_path + "; ";
+            }
+            if (res.rowCount === 0) {
+                return "No photos associated";
+            }
+            return allPaths;
+
+
         } catch (error){
             Logger.error(error.stack);
             return undefined;
