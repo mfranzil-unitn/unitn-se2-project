@@ -46,7 +46,9 @@ async function read(rev_id) {
         res1 = await Review.getByPrimaryKey(rev_id);
         res2 = await Photo.getByReviewId(rev_id);
         res = res1;
-        res.review_photo_path = res2.photo_path;
+        if(res2) {
+            res.review_photo_path = res2.photo_path;
+        }
     } else if (typeof res === "undefined") {
         throw new MissingReviewError('Review with this review_id not found.');
     }

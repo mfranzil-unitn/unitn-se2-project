@@ -39,7 +39,7 @@ module.exports = async function (routes) {
         } catch (e) {
             let error = new Error('Error while returning the review: ' + e.message);
             if (e.constructor === ReviewService.MissingReviewError) {
-                error.status = 404;
+                error.status = 400;
             } else {
                 error.status = 500;
             }
