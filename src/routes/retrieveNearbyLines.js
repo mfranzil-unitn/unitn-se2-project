@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const RetrieveService = require('@app/services/retrieve_nearby_lines');
+const RetrieveService = require('@app/services/retrieveNearbyLines');
 
 const route = Router();
 

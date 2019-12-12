@@ -1,15 +1,15 @@
-const Review = require('@app/models/review');
-const Photo = require('@app/models/photo');
+const Review = require('@app/models/reviews');
+const Photo = require('@app/models/photos');
 
 class MissingReviewError extends Error {
-  constructor(...args) {
-    super(...args)
-    Error.captureStackTrace(this, MissingReviewError)
-  }
+    constructor(...args) {
+        super(...args)
+        Error.captureStackTrace(this, MissingReviewError)
+    }
 }
 
 async function write(review, path) {
-    if (!review || review === undefined) {
+    if (!review) {
         throw Error('Review parameter required.');
     }
 
@@ -21,8 +21,8 @@ async function write(review, path) {
     let res = await Review.insert(review);
 
     console.log('Added new review');
-    if(path){
-        let pic ={};
+    if (path) {
+        let pic = {};
         pic.photo_review_id = res;
         pic.photo_path = path;
         let insert_id = await Photo.insert(pic);
@@ -32,19 +32,22 @@ async function write(review, path) {
 }
 
 async function read(rev_id) {
-  let res;
-    if(parseInt(rev_id) !== NaN && rev_id >=0){
-       res =  await Review.getByPrimaryKey(rev_id);
+    if (!rev_id) {
+        throw Error('Review parameter required.');
     }
-    if(res === undefined){
-      throw new MissingReviewError('Review with this review_id not found');
+
+    let res;
+    if (parseInt(rev_id) !== NaN && rev_id >= 0) {
+        res = await Review.getByPrimaryKey(rev_id);
+    } else if (typeof res === "undefined") {
+        throw new MissingReviewError('Review with this review_id not found.');
     }
     return res;
 }
 
 async function getAll() {
-  const res =  await Review.getAll();
-  return res;
+    const res = await Review.getAll();
+    return res;
 }
 
 

@@ -1,4 +1,4 @@
-const db = require('.');
+const db = require('@app/models');
 const Logger = require('@app/loaders/logger');
 
 const queries = {

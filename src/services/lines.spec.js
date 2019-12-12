@@ -14,10 +14,9 @@ test('placing undefined should throw an error', async () => {
     await expect(LineService.place(undefined)).rejects.toThrow('Line parameter required');
 });
 
-test('getAll should return an array of objects', async () => {
+test('getAll without parameters should throw an error', async () => {
     const LineService = require('@app/services/lines');
 
-    let res = await LineService.getAll();
-    expect(Array.isArray(res)).toBe(true);
+    await expect(LineService.getAll()).rejects.toThrow('Please specify limit and offset first as integers');
 });
 

@@ -2,7 +2,7 @@
 // For example, an authentication middleware.
 // Some examples can be found at
 //    https://github.com/santiq/bulletproof-nodejs/tree/master/src/api/middlewares
-const checkAuth = require('./isAuth');
+const checkAuth = require('@app/routes/middlewares/isAuth');
 
 module.exports = {
     checkAuth

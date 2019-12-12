@@ -1,8 +1,8 @@
-const config = require('./config');
-const Logger = require('./loaders/logger');
+const config = require('@app/config');
+const Logger = require('@app/loaders/logger');
 
 async function runServer() {
-    const app = await require('./app')();
+    const app = await require('@app/app')();
 
     app.listen(config.port, error => {
         if (error) {
