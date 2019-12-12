@@ -21,6 +21,22 @@ const route = Router();
 module.exports = async function (routes) {
     routes.use('/photo', route);
 
+    route.get('/', async(req, res, next) => {
+        try {
+            let idRichiesta = req.query.photo_review_id;
+
+            let result = await PhotoService.get(idRichiesta);
+
+            res.status(200).json('Image path: ' + result);
+
+        } catch (e) {
+            let error = new Error('Error in getting photo: ' + e.message);
+            error.status = 400;
+            next(error);
+        }
+    });
+
+
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
             const photo_path = req.file.path;

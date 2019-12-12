@@ -8,6 +8,11 @@ class MissingReviewError extends Error {
     }
 }
 
+function isInteger(value){
+    return value.match(/^[0-9]+$/) != null;
+}
+
+
 async function write(review, path) {
     if (!review) {
         throw Error('Review parameter required.');
@@ -36,18 +41,32 @@ async function read(rev_id) {
         throw Error('Review parameter required.');
     }
 
-    let res;
+    let res,res1,res2;
     if (parseInt(rev_id) !== NaN && rev_id >= 0) {
-        res = await Review.getByPrimaryKey(rev_id);
+        res1 = await Review.getByPrimaryKey(rev_id);
+        res2 = await Photo.getByReviewId(rev_id);
+        res = res1;
+        res.review_photo_path = res2.photo_path;
     } else if (typeof res === "undefined") {
         throw new MissingReviewError('Review with this review_id not found.');
     }
     return res;
 }
 
-async function getAll() {
-    const res = await Review.getAll();
-    return res;
+async function getAll(query) {
+    if (!query || !query.limit || !query.offset || !isInteger(query.limit) || !isInteger(query.offset)) {
+        throw new Error("Please specify limit and offset first as integers");
+    }
+    let res = await Review.getAll(query.limit, query.offset);
+    let count_res = await Review.getCount();
+
+    let detailed_res = {
+        "results": res,
+        "metadata": {
+            "total": count_res[0].count
+        }
+    }
+    return detailed_res;
 }
 
 

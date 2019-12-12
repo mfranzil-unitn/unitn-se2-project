@@ -7,7 +7,8 @@ const queries = {
     delete: "DELETE FROM photo WHERE photo_id = $1;",
     getByPrimaryKey: "SELECT * FROM photo WHERE photo_id = $1",
     getAll: "SELECT * FROM photo;",
-    getCount: "SELECT COUNT(*) FROM photo;"
+    getCount: "SELECT COUNT(*) FROM photo;",
+    getByReviewId: "SELECT * FROM photo WHERE photo_review_id = $1"
 };
 
 // photo = { photo_id : Number, photo_review_id : Number, photo_path : String };
@@ -67,6 +68,15 @@ module.exports = {
             let res = await db.executeQuery(queries.getCount);
             return res.rows;
         } catch (error) {
+            Logger.error(error.stack);
+            return undefined;
+        }
+    },
+    getByReviewId: async(review_id) =>{
+        try{
+            let res = await db.executeQuery(queries.getByReviewId,parseInt(review_id));
+            return res.rows[0];
+        } catch (error){
             Logger.error(error.stack);
             return undefined;
         }
