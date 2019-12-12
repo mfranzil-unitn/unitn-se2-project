@@ -27,14 +27,15 @@ module.exports = async function (routes) {
         try {
             let result;
             if (req.path === '/') {
-                result = await ReviewService.getAll();
+                result = await ReviewService.getAll(req.query);
+                res.status(200).json(result);
             } else {
                 result = await ReviewService.read(req.path.replace('/', ''));
                 if (!result) {
                     throw Error('Invalid id');
                 }
+                res.status(200).json(result);
             }
-            res.status(200).json(result);
         } catch (e) {
             let error = new Error('Error while returning the review: ' + e.message);
             if (e.constructor === ReviewService.MissingReviewError) {

@@ -8,6 +8,11 @@ class MissingReviewError extends Error {
     }
 }
 
+function isInteger(value){
+    return value.match(/^[0-9]+$/) != null;
+}
+
+
 async function write(review, path) {
     if (!review) {
         throw Error('Review parameter required.');
@@ -56,8 +61,19 @@ async function read(rev_id) {
 }
 
 async function getAll() {
-    const res = await Review.getAll();
-    return res;
+    if (!query || !query.limit || !query.offset || !isInteger(query.limit) || !isInteger(query.offset)) {
+        throw new Error("Please specify limit and offset first as integers");
+    }
+    let res = await Review.getAll(query.limit, query.offset);
+    let count_res = await Review.getCount();
+
+    let detailed_res = {
+        "results": res,
+        "metadata": {
+            "total": count_res[0].count
+        }
+    }
+    return detailed_res;
 }
 
 

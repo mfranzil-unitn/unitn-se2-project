@@ -9,6 +9,7 @@ const queries = {
     delete: "DELETE FROM review WHERE review_id = $1;",
     getByPrimaryKey: "SELECT * FROM review WHERE review_id = $1",
     getAll: "SELECT * FROM review;",
+    getAllLimited: "SELECT * FROM review LIMIT $1 OFFSET $2;",
     getCount: "SELECT COUNT(*) FROM review;"
 };
 
@@ -60,15 +61,20 @@ module.exports = {
             return undefined;
         }
     },
-    getAll: async () => {
+    getAll: async (limit, offset) => {
         try {
-            let res = await db.executeQuery(queries.getAll);
+            let res = undefined;
+            if (!!limit && !!offset) {
+                res = await db.executeQuery(queries.getAllLimited, limit, offset);
+            } else {
+                res = await db.executeQuery(queries.getAll);
+            }
             return res.rows;
-        } catch (error) {
-            Logger.error(error.stack);
-            return undefined;
-        }
-    },
+            } catch (error) {
+                Logger.error(error.stack);
+                return undefined;
+            }
+        },
     getCount: async () => {
         try {
             let res = await db.executeQuery(queries.getCount);
