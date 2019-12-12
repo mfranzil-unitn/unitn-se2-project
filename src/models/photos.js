@@ -76,14 +76,15 @@ module.exports = {
         try{
             let res = await db.executeQuery(queries.getByReviewId, parseInt(review_id));
             let allPaths = "";
-            for (let i=0; i<res.rowCount; i++) {
-                allPaths += res.rows[i].photo_path + "; ";
-            }
             if (res.rowCount === 0) {
                 return "No photos associated";
+            } else {
+                for (let i=0; i<res.rowCount; i++) {
+                    allPaths += res.rows[i].photo_path + ( i===(res.rowCount-1) ? "" : "; ");
+                }
+                
+                return allPaths;
             }
-            return allPaths;
-
 
         } catch (error){
             Logger.error(error.stack);

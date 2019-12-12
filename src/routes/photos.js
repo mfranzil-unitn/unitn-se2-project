@@ -27,7 +27,7 @@ module.exports = async function (routes) {
 
             let result = await PhotoService.getByReviewId(idRichiesta);
 
-            res.status(200).json('Image path: ' + result);
+            res.status(200).json('Image path(s): ' + result);
 
         } catch (e) {
             let error = new Error('Error while getting photo: ' + e.message);
