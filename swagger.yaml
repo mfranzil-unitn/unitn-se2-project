@@ -118,19 +118,49 @@ paths:
         400:
           description: Non-existant combination of userID and password, or invalid parameters
           content: {}
-  /line:
+
+
+  # Line section
+  /lines:
     get:
       tags:
       - line
       summary: Get all lines
+      description: This can only be done by the logged user.
       operationId: getAllLines
+      parameters:
+      - name: limit
+        in: query
+        description: The offset in selecting lines
+        required: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: The number of selected lines
+        required: true
+        schema:
+          type: integer
       responses:
         200:
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Line'
+                type: object
+                properties: 
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Line'
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+        401:
+          description: Unauthorized
+          content: {} 
         500:
           description: Error while getting Line
           content: {}
@@ -138,7 +168,7 @@ paths:
       tags:
       - line
       summary: Create new geolocalized line
-      description: This can only be done by the logged in user.
+      description: This can only be done by the logged user.
       operationId: createLine
       parameters:
       - name: line_user_id
@@ -190,7 +220,11 @@ paths:
         400:
           description: Wrong line info
           content: {}
-  /line/{lineID}:
+        401:
+          description: Unauthorized
+          content: {} 
+          
+  /lines/{lineID}:
     get:
       tags:
       - line
@@ -213,9 +247,14 @@ paths:
         400:
           description: Error while getting Line
           content: {}
+        401:
+          description: Unauthorized
+          content: {} 
         404:
           description: Line with provided LineID not found
           content: {}
+
+
   /review:
     get:
       tags:
