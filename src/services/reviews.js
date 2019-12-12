@@ -36,9 +36,19 @@ async function read(rev_id) {
         throw Error('Review parameter required.');
     }
 
-    let res;
+    let res,res1,res2;
     if (parseInt(rev_id) !== NaN && rev_id >= 0) {
-        res = await Review.getByPrimaryKey(rev_id);
+        res1 = await Review.getByPrimaryKey(rev_id);
+        res2 = await Photo.getByReviewId(rev_id);
+        res = new Object();
+        res.review_id = res1.review_id;
+        res.review_user_id = res1.review_user_id;
+        res.review_line_id = res1.review_line_id;
+        res.review_rating = res1.review_rating;
+        res.review_description = res1.review_description;
+        res.review_photo_path = res2.photo_path;
+        res = JSON.stringify(res);
+        res = JSON.parse(res);
     } else if (typeof res === "undefined") {
         throw new MissingReviewError('Review with this review_id not found.');
     }

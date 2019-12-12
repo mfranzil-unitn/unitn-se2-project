@@ -48,9 +48,16 @@ module.exports = async function (routes) {
 
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
-            const photo_path = req.file.path
-            let result = await ReviewService.write(req.query, photo_path);
-            res.status(201).json('Added review with id: ' + result + ' And an image with  name:' + req.file.filename);
+            let result;
+            if(req.file) {
+                const photo_path = req.file.path
+                result = await ReviewService.write(req.query, photo_path);
+                res.status(201).json('Added review with id: ' + result + ' And an image with  name:' + req.file.filename);
+            }
+            else{
+                result = await ReviewService.write(req.query, null);
+                res.status(201).json('Added review with id: ' + result);
+            }
         } catch (e) {
             let error = new Error('Error while inserting Review: ' + e.message);
             error.status = 400;

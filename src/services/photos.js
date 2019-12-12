@@ -20,10 +20,19 @@ async function add(review_id, path) {
     return insert_id;
 }
 
+async function get(primaryKey) {
+    if (!primaryKey || typeof(primaryKey) === "undefined") {
+        throw Error('No PK');
+    }
+    let path = await Photo.getByPrimaryKey(primaryKey).path;
+    if (typeof(path) === "undefined") {
+        throw new Error('No image found');
+    }
+    return path;
 
-
-
+}
 
 module.exports = {
-    add
+    add,
+    get
 };
