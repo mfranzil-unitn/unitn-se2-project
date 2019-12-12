@@ -72,10 +72,10 @@ module.exports = {
             return undefined;
         }
     },
-    getByReviewId: async(review_id) =>{
+    getPathByReviewId: async(review_id) =>{
         try{
-            let res = await db.executeQuery(queries.getByReviewId,parseInt(review_id));
-            return res.rows[0];
+            let res = await db.executeQuery(queries.getByReviewId, parseInt(review_id));
+            return res.rows[0].photo_path;
         } catch (error){
             Logger.error(error.stack);
             return undefined;

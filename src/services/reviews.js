@@ -44,7 +44,7 @@ async function read(rev_id) {
     let res,res1,res2;
     if (parseInt(rev_id) !== NaN && rev_id >= 0) {
         res1 = await Review.getByPrimaryKey(rev_id);
-        res2 = await Photo.getByReviewId(rev_id);
+        res2 = await Photo.getPathByReviewId(rev_id);
         res = res1;
         if(res2) {
             res.review_photo_path = res2.photo_path;

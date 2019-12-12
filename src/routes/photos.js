@@ -25,7 +25,7 @@ module.exports = async function (routes) {
         try {
             let idRichiesta = req.query.photo_review_id;
 
-            let result = await PhotoService.get(idRichiesta);
+            let result = await PhotoService.getByReviewId(idRichiesta);
 
             res.status(200).json('Image path: ' + result);
 

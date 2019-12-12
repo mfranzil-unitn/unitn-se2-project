@@ -313,7 +313,7 @@ paths:
           type: number
       - name: review_description
         in: query
-        description: Line''s description
+        description: Line's description
         required: true
         schema:
           type: string
@@ -356,6 +356,7 @@ paths:
         500:
           description: Review with provided ReviewID not found
           content: {}
+
   /retrieve:
     get:
       tags:
@@ -379,6 +380,52 @@ paths:
       responses:
         201:
           description: Successfull operation, retrieving nearby lines...
+        400:
+          description: Wrong request
+
+  /photo:
+    get:
+      tags:
+        - review
+        - photo
+      summary: Retrieve review photo path.
+      description: Allows to retrieve the photo path of an existing review if it exists.
+      operationId: photoRetrieve
+      parameters:
+        - name: review_id
+          in: query
+          description: The id of the review of which you want the image.
+          required: true
+          schema:
+            type: number
+      responses:
+        201:
+          description: Photo path returned
+        400:
+          description: Wrong request
+    post:
+      tags:
+        - review
+        - photo
+      summary: Insert photo of review.
+      description: Allows to insert a photo of an existing review.
+      operationId: photoInsert
+      parameters:
+        - name: photo_review_id
+          in: query
+          description: The id of the review you want to add the photo.
+          required: true
+          schema:
+            type: number
+        - name: review_image
+          in: body
+          description: The actual photo to be set as review image
+          required: true
+          schema:
+            type: JPG, PNG, GIF
+      responses:
+        201:
+          description: Photo added to review
         400:
           description: Wrong request
 
