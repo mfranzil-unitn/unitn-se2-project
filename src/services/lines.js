@@ -46,9 +46,9 @@ async function getAll(query) {
     let count_res = await Line.getCount();
     
     let detailed_res = {
-        "results" : res,
-        "metadata" : {
-            "total" : count_res[0].count
+        results: res,
+        metadata: {
+            total : count_res[0].count
         }
     }
     return detailed_res;
