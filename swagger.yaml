@@ -119,7 +119,7 @@ paths:
 
 
   # Line section
-  /line:
+  /lines:
     get:
       tags:
       - line
@@ -144,13 +144,18 @@ paths:
           description: Successful operation
           content:
             application/json:
-                example:
-                  type: object
-                  properties:
-                    user_id:
-                      type: string
-                    user_name:
-                      type: strin
+              schema:
+                type: object
+                properties: 
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Line'
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
         401:
           description: Unauthorized
           content: {} 
@@ -217,7 +222,7 @@ paths:
           description: Unauthorized
           content: {} 
           
-  /line/{lineID}:
+  /lines/{lineID}:
     get:
       tags:
       - line
