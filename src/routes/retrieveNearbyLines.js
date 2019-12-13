@@ -13,7 +13,7 @@ module.exports = async function (routes) {
             res.status(200).json(result);
         } catch (e) {
             const error = new Error('Wrong retrieving info: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });

@@ -26,12 +26,10 @@ module.exports = async function (routes) {
             let idRichiesta = req.query.photo_review_id;
 
             let result = await PhotoService.getByReviewId(idRichiesta);
-
-            res.status(200).json('Image path(s): ' + result);
-
+            res.status(200).json(result);
         } catch (e) {
             let error = new Error('Error while getting photo: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -44,10 +42,10 @@ module.exports = async function (routes) {
             }
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);
-            res.status(201).json('Added image with id: ' + result + ' for review_id: ' + req.query.photo_review_id);
+            res.status(201).json(result);
         } catch (e) {
             let error = new Error('Error while inserting Photo: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });

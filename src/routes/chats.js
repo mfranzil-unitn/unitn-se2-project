@@ -20,7 +20,7 @@ module.exports = async function (routes) {
             }
         } catch (e) {
             const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -38,7 +38,7 @@ module.exports = async function (routes) {
             }
         } catch (e) {
             const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -50,7 +50,7 @@ module.exports = async function (routes) {
                 res.status(201).json(result);
             } catch (e) {
                 const error = new Error('Failed to create chat: ' + e.message);
-                error.status = e.code;
+                error.status = e.code || 500;
                 next(error);
             }
         } else {
@@ -60,7 +60,7 @@ module.exports = async function (routes) {
                 res.status(201).json(result);
             } catch (e) {
                 const error = new Error('Failed to send message: ' + e.message);
-                error.status = e.code;
+                error.status = e.code || 500;
                 next(error);
             }
         }
@@ -79,7 +79,7 @@ module.exports = async function (routes) {
             }
         } catch (e) {
             const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });

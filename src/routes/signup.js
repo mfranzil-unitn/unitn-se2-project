@@ -13,7 +13,7 @@ module.exports = async function (routes) {
             res.status(201).json();
         } catch (e) {
             const error = new Error('Failed to create new user: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });

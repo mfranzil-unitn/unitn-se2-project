@@ -54,10 +54,10 @@ paths:
       responses:
         201:
           description: User successfully created
-          content: {}
         400:
           description: Bad request (invalid number of parameters or content)
-          content: {}
+        409:
+          description: User already present in the system with this ID
   /login:
     post:
       tags:
@@ -78,12 +78,12 @@ paths:
         schema:
           type: string
       responses:
-        200:
+        204:
           description: User successfully logged in
-          content: {}
         400:
-          description: Non-existant combination of userID and password, or invalid parameters
-          content: {}
+          description: Invalid parameters
+        422:
+          description: Non-existant combination of userID and password
   /chats:
     post:
       tags:
@@ -112,7 +112,7 @@ paths:
                 type: object
                 properties:
                   chat_id:
-                    type: string
+                    type: integer
                     description: The chatID of the newly created chat.
         400:
           description: Invalid parameters.
@@ -127,13 +127,13 @@ paths:
       summary: Sends a message in a chat.
       operationId: sendMessage
       parameters:
-      - name: message_user_id
+      - name: user_id
         in: query
         required: true
         description: The userID of the currently logged in user, that will be inserted automatically in the newly created chat.
         schema:
           type: string
-      - name: message_chat_id
+      - name: chat_id
         in: path
         required: true
         description: The chatID of the selected chat.
@@ -153,9 +153,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  chat_id:
+                  message_id:
                     type: string
-                    description: The chatID of the newly created chat.
+                    description: The messageID of the newly created message.
         400:
           description: Invalid parameters.
         401:
@@ -291,6 +291,9 @@ paths:
           description: Either the user isn't logged in or used a user_id parameter that is not theirs.
         500:
           description: Internal server error.
+  
+  
+  
   /users:
     get:
       tags:
@@ -300,8 +303,7 @@ paths:
       parameters:
       - name: user_id
         in: query
-        description: The userID to query the system with, or a comma-separated value
-          of userIDs
+        description: The userID to query the system with, or a comma-separated value of userIDs
         schema:
           type: string
       - name: limit
@@ -316,22 +318,31 @@ paths:
           type: integer
       responses:
         200:
-          description: A User object if a single userID was requested, or an array of Users.
+          description: A User object if a single userID was provided, or an array of Users (or null if the correspondent User was not found).
           content:
             application/json:
               schema:
                 oneOf:
+                  - type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                      metadata:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
                   - $ref: '#/components/schemas/User'
-                  - type: array
-                    items:
-                      $ref: '#/components/schemas/User'
+        404:
+          description: User not found, if a single userID was provided.
   # Line section
   /lines:
     get:
       tags:
       - line
-      summary: Get all lines
-      description: This can only be done by the logged user.
+      summary: Gets all lines.
       operationId: getAllLines
       parameters:
       - name: limit
@@ -348,7 +359,7 @@ paths:
           type: integer
       responses:
         200:
-          description: Successful operation
+          description: Successful operation.
           content:
             application/json:
               schema:
@@ -364,15 +375,13 @@ paths:
                       total:
                         type: integer
         401:
-          description: Unauthorized
-          content: {}
+          description: The user isn't logged in.
         500:
-          description: Error while getting Line
-          content: {}
+          description: Internal server error.
     post:
       tags:
       - line
-      summary: Create new geolocalized line
+      summary: Creates new geolocalized line
       description: This can only be done by the logged user.
       operationId: createLine
       parameters:
@@ -419,15 +428,22 @@ paths:
         schema:
           type: string
       responses:
-        200:
-          description: successful operation
-          content: {}
+        201:
+          description: The line was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  line_id:
+                    type: integer
+                    description: The lineID of the newly created line.
         400:
-          description: Wrong line info
-          content: {}
+          description: Invalid parameters.
         401:
-          description: Unauthorized
-          content: {}
+          description: The user isn't logged in.
+        500:
+          description: Internal server error.
 
   /lines/{lineID}:
     get:
@@ -444,20 +460,19 @@ paths:
           type: number
       responses:
         200:
-          description: successful operation
+          description: Line successfully retrieved.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Line'
         400:
-          description: Error while getting Line
-          content: {}
+          description: Invalid parameters.
         401:
-          description: Unauthorized
-          content: {}
+          description: The user isn't logged in.
         404:
-          description: Line with provided LineID not found
-          content: {}
+          description: Line not found.
+        500:
+          description: Internal server error.
 
 #Review's Section
   /review:
@@ -481,16 +496,25 @@ paths:
                 type: number
       responses:
         200:
-          description: successful operation
+          description: Successful operation.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Review'
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+        401:
+          description: The user isn't logged in.
         500:
-          description: Error while getting Review. Internal Error.
-          content: {}
+          description: Internal server error.
     post:
       tags:
       - review
@@ -522,19 +546,31 @@ paths:
         required: true
         schema:
           type: string
-      - name: review_image
-        in: query
-        description: Line's picture
+      requestBody:
+        description: A JPG, PNG, GIF form-encoded file representing the actual photo to be set as line reivew image
         required: false
-        schema:
-            type: object
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
       responses:
         201:
-          description: successful operation, review created
-          content: {}
+          description: The review was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  review_id:
+                    type: integer
+                    description: The reviewID of the newly created review.
         400:
-          description: Wrong review info
-          content: {}
+          description: Invalid parameters.
+        401:
+          description: The user isn't logged in.
+        500:
+          description: Internal server error.
   /review/{review_id}:
     get:
       tags:
@@ -550,17 +586,19 @@ paths:
           type: number
       responses:
         200:
-          description: successful operation
+          description: Review successfully retrieved.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review_With_Photo_Path'
         400:
-          description: Error while getting Review. Review_Id not provided.
-          content: {}
+          description: Invalid parameters.
+        401:
+          description: The user isn't logged in.
+        404:
+          description: Review not found.
         500:
-          description: Review with provided ReviewID not found
-          content: {}
+          description: Internal server error.
 
   /retrieve:
     get:
@@ -583,10 +621,20 @@ paths:
           schema:
             type: number
       responses:
-        201:
-          description: Successfull operation, retrieving nearby lines...
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Line'
         400:
-          description: Wrong request
+          description: Invalid parameters.
+        401:
+          description: The user isn't logged in.
+        500:
+          description: Internal server error.
 
   /photo:
     get:
@@ -604,10 +652,21 @@ paths:
           schema:
             type: number
       responses:
-        201:
-          description: Photo path returned
+        200:
+          description: Review successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The photo path of the review image.
         400:
-          description: Wrong request
+          description: Invalid parameters.
+        401:
+          description: The user isn't logged in.
+        404:
+          description: Review not found.
+        500:
+          description: Internal server error.
     post:
       tags:
         - review
@@ -632,9 +691,21 @@ paths:
               format: binary
       responses:
         201:
-          description: Photo added to review
+          description: The photo was successfully added to the review.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  photo_id:
+                    type: integer
+                    description: The photoID of the newly created photo.
         400:
-          description: Wrong request
+          description: Invalid parameters.
+        401:
+          description: The user isn't logged in.
+        500:
+          description: Internal server error.
 
 components:
   schemas:
@@ -706,14 +777,18 @@ components:
                 type: string
             review_photo_path:
                 type: string
-    Photo:
+    Message:
       type: object
       properties:
-        photo_id:
-         type: integer
-         format: int64
-        photo_review_id:
-         type: integer
-         format: int64
-        photo_path:
-         type: string
+        message_id:
+          type: integer
+          format: int64
+        message_datetime:
+          type: string
+        message_text:
+          type: string
+        message_chat_id:
+          type: integer
+          format: int64
+        message_user_id:
+          type: string

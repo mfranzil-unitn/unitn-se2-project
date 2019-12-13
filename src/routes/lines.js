@@ -10,11 +10,11 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             let result = await PlaceLineService.place(req.query);
-            res.status(201).json('Added review with id: ' + result);
+            res.status(201).json();
         } catch (e) {
             const error = new Error('Wrong line info: ' + e.message);
             console.log(e);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -28,11 +28,7 @@ module.exports = async function (routes) {
                 res.status(200).json(result);
             } catch (e) {
                 const error = new Error('Error while getting Lines: ' + e.message);
-                if (e.constructor === PlaceLineService.MissingLineError) {
-                    error.status = e.code;
-                } else {
-                    error.status = e.code;
-                }
+                error.status = e.code || 500;
                 next(error);
             }
         }
@@ -42,11 +38,7 @@ module.exports = async function (routes) {
                 res.status(200).json(result);
             } catch (e) {
                 const error = new Error('Error while getting Line: ' + e.message);
-                if (e.constructor === PlaceLineService.MissingLineError) {
-                    error.status = e.code;
-                } else {
-                    error.status = e.code;
-                }
+                error.status = e.code || 500;
                 next(error);
             }
         }

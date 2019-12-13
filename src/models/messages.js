@@ -9,11 +9,11 @@ const queries = {
     delete: "DELETE FROM message WHERE message_id = $1;",
     getByPrimaryKey: "SELECT * FROM message WHERE message_id = $1;",
     getAll: "SELECT * FROM message ORDER BY message_datetime DESC;",
-    getAllLimited: "SELECT * FROM message LIMIT $1 OFFSET $2 ORDER BY message_datetime DESC;",
+    getAllLimited: "SELECT * FROM message ORDER BY message_datetime DESC LIMIT $1 OFFSET $2;",
     getCount: "SELECT COUNT(*) FROM message;",
+    getCountByChat: "SELECT COUNT(*) FROM message WHERE message_chat_id = $1;",
     getByChat: "SELECT * FROM message WHERE message_chat_id = $1 ORDER BY message_datetime DESC;",
-    getByChatLimited: "SELECT * FROM message WHERE message_chat_id = $1 LIMIT $2 OFFSET $3"
-        + " ORDER BY message_datetime DESC;"
+    getByChatLimited: "SELECT * FROM message WHERE message_chat_id = $1 ORDER BY message_datetime DESC LIMIT $2 OFFSET $3;"
 };
 
 // message = { message_id : Number, message_datetime : Date, message_text : String,
@@ -77,6 +77,15 @@ module.exports = {
     getCount: async () => {
         try {
             let res = await db.executeQuery(queries.getCount);
+            return res.rows;
+        } catch (error) {
+            Logger.error(error.stack);
+            return undefined;
+        }
+    },
+    getCountByChat: async (chat_id) => {
+        try {
+            let res = await db.executeQuery(queries.getCountByChat, chat_id);
             return res.rows;
         } catch (error) {
             Logger.error(error.stack);

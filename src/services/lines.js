@@ -21,16 +21,21 @@ async function place(line) {
 
     if (!line.line_user_id || !line.line_start_lat || !line.line_start_lon || !line.line_end_lat
         || !line.line_end_lon || !line.line_name || !line.line_description || !isFloat(line.line_start_lat)
-        || !isFloat(line.line_start_lon) || !isFloat(line.line_end_lat) || !isFloat(line.line_end_lon)
-    ) {
+        || !isFloat(line.line_start_lon) || !isFloat(line.line_end_lat) || !isFloat(line.line_end_lon)) {
         throw new HTTPError('Please supply a valid Line object: { line_user_id: String, '
             + 'line_start_lat: Number, line_start_lon: Number, line_end_lat: Number, '
             + 'line_end_lon: Number, line_name: String, line_description: String}', 400);
     }
-    let result = await Line.insert(line);
-    console.log(result);
 
-    return;
+    if (query.line_user_id !== query.logged_user_id) {
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
+    }
+
+    let newLineID = await Line.insert(line);
+
+    return {
+        line_id: newLineID
+    };
 }
 
 async function getAll(query) {
@@ -40,13 +45,12 @@ async function getAll(query) {
     let res = await Line.getAll(query.limit, query.offset);
     let count_res = await Line.getCount();
 
-    let detailed_res = {
+    return {
         results: res,
         metadata: {
-            total : count_res[0].count
+            total: count_res[0].count
         }
-    }
-    return detailed_res;
+    };
 }
 
 async function get(id) {

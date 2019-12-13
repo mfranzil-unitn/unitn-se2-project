@@ -20,6 +20,7 @@ async function write(review, path) {
     let res = await Review.insert(review);
 
     console.log('Added new review');
+
     if (path) {
         let pic = {};
         pic.photo_review_id = res;
@@ -27,7 +28,9 @@ async function write(review, path) {
         let insert_id = await Photo.insert(pic);
         console.log('Added photo for review: ' + res + ' with id: ' + insert_id);
     }
-    return res;
+    return {
+        review_id: res
+    };
 }
 
 async function read(rev_id) {

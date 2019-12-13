@@ -1,13 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Logger = require('@app/loaders/logger');
 
-class LoginError extends Error {
-    constructor(...args) {
-        super(...args)
-        Error.captureStackTrace(this, LoginError)
-    }
-}
-
 // Auth using cookies
 const isAuth = req => {
     // Get the cookies from the request
@@ -23,7 +16,7 @@ const isAuth = req => {
     }
     catch (e) {
         // If not correct, it might be corrupted / expired
-        throw new LoginError("Wrong authorization token");
+        throw new HTTPError("Wrong authorization token", 422);
     }
     return payload.username;
 }
@@ -37,20 +30,17 @@ module.exports = async function (routes) {
             // If there are no token you are not logged
             if (authName == undefined) {
                 const error = new Error('Please Login first');
-                error.status = e.code;
+                error.status = e.code || 500;
                 next(error);
             } else {
-                Logger.info("Logged with UserID: " + authNmae);
+                Logger.info("Logged with UserID: " + authName);
                 req.query.logged_user_id = authName;
             }
-        }
-        catch (e) {
+        } catch (e) {
             const error = new Error(e.message);
 
             // If LoginError -> expired or wrong token
-            if (e.constructor === LoginError) {
-                error.status = e.code;
-            }
+            error.status = e.code || 500;
             next(error);
         }
         next();

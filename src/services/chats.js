@@ -86,7 +86,7 @@ async function getMessages(query) {
     }
 
     let messages = await Messages.getByChat(query.chat_id, query.limit, query.offset);
-    let totalCount = await Messages.getCount();
+    let totalCount = await Messages.getCountByChat();
 
     return {
         results: messages,

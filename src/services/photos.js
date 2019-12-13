@@ -19,7 +19,9 @@ async function add(review_id, path) {
         throw new HTTPError('Invalid review_id', 400);
     }
 
-    return insert_id;
+    return {
+        photo_id: insert_id
+    };
 }
 
 async function get(primaryKey) {

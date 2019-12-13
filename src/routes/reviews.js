@@ -39,9 +39,9 @@ module.exports = async function (routes) {
         } catch (e) {
             let error = new Error('Error while returning the review: ' + e.message);
             if (e.constructor === ReviewService.MissingReviewError) {
-                error.status = e.code;
+                error.status = e.code || 500;
             } else {
-                error.status = e.code;
+                error.status = e.code || 500;
             }
             next(error);
         }
@@ -61,7 +61,7 @@ module.exports = async function (routes) {
             }
         } catch (e) {
             let error = new Error('Error while inserting Review: ' + e.message);
-            error.status = e.code;
+            error.status = e.code || 500;
             next(error);
         }
     });

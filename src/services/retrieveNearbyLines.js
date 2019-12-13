@@ -4,7 +4,6 @@ const { HTTPError } = require('@app/errors');
 const Logger = require('winston');
 
 async function retrieve(point) {
-
     let lat = point.lat;
     let lon = point.lon;
     const rad = 0.0013; /* Circa 0.1 km */
