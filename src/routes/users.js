@@ -27,7 +27,7 @@ module.exports = async function (routes) {
             res.status(200).json(users);
         } catch (e) {
             const error = new Error('Failed to retrieve users: ' + e.message);
-            error.status = 400;
+            error.status = e.code;
             next(error);
         }
     });

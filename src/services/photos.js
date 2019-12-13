@@ -1,12 +1,14 @@
 const Photo = require('@app/models/photos');
 
+const { HTTPError } = require('@app/errors');
+
 async function add(review_id, path) {
     if (!review_id || typeof review_id === "undefined") {
-        throw Error('Review_id parameter required.');
+        throw new HTTPError('Review_id parameter required.', 400);
     }
 
     if (!path) {
-        throw Error('Please supply a valid Photo object: { photo_review_id : Number, photo_path: String }');
+        throw new HTTPError('Please supply a valid Photo object: { photo_review_id : Number, photo_path: String }', 400);
     }
 
     let pic = {};
@@ -14,31 +16,31 @@ async function add(review_id, path) {
     pic.photo_path = path;
     let insert_id = await Photo.insert(pic);
     if (insert_id === -1) {
-        throw Error('Invalid review_id');
+        throw new HTTPError('Invalid review_id', 400);
     }
 
     return insert_id;
 }
 
 async function get(primaryKey) {
-    if (!primaryKey || typeof(primaryKey) === "undefined") {
-        throw Error('No PK');
+    if (!primaryKey || typeof (primaryKey) === "undefined") {
+        throw new HTTPError('No PK', 400);
     }
     let path = await Photo.getByPrimaryKey(primaryKey).photo_path;
-    if (typeof(path) === "undefined") {
-        throw new Error('No image found');
+    if (typeof (path) === "undefined") {
+        throw new HTTPError('No image found', 404);
     }
     return path;
 }
 
 async function getByReviewId(reviewId) {
-    if (!reviewId || typeof(reviewId) === "undefined") {
-        throw Error('No PK');
+    if (!reviewId || typeof (reviewId) === "undefined") {
+        throw new HTTPError('No PK', 400);
     }
     let path = await Photo.getPathByReviewId(reviewId);
-    if (typeof(path) === "undefined") {
+    if (typeof (path) === "undefined") {
         console.log(path);
-        throw new Error('No image found for this reviewId');
+        throw new HTTPError('No image found for this reviewId', 404);
     }
     return path;
 }

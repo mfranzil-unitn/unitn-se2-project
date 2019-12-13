@@ -14,7 +14,7 @@ module.exports = async function (routes) {
         } catch (e) {
             const error = new Error('Wrong line info: ' + e.message);
             console.log(e);
-            error.status = 400;
+            error.status = e.code;
             next(error);
         }
     });
@@ -29,9 +29,9 @@ module.exports = async function (routes) {
             } catch (e) {
                 const error = new Error('Error while getting Lines: ' + e.message);
                 if (e.constructor === PlaceLineService.MissingLineError) {
-                    error.status = 404;
+                    error.status = e.code;
                 } else {
-                    error.status = 400;
+                    error.status = e.code;
                 }
                 next(error);
             }
@@ -43,9 +43,9 @@ module.exports = async function (routes) {
             } catch (e) {
                 const error = new Error('Error while getting Line: ' + e.message);
                 if (e.constructor === PlaceLineService.MissingLineError) {
-                    error.status = 404;
+                    error.status = e.code;
                 } else {
-                    error.status = 400;
+                    error.status = e.code;
                 }
                 next(error);
             }

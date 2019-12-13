@@ -12,54 +12,20 @@ info:
 servers:
 - url: https://se2-project.herokuapp.com/api/v1/users
 tags:
+- name: auth
+  description: APIs for creating new users and authenticating to the system
+- name: users
+  description: APIs for retrieving users
 - name: line
   description: APIs for creating and retrieving lines
 - name: review
   description: APIs for creating and retrieving reviews
 - name: photo
   description: APIs for adding and retrieving photos
-- name: users
-  description: APIs for retrieving users
-- name: auth
-  description: APIs for creating new users and authenticating to the system
-paths:
-  /users:
-    get:
-      tags:
-      - users
-      summary: Retrieves one or more users from the system.
-      operationId: users
-      parameters:
-      - name: user_id
-        in: query
-        description: The userID to query the system with, or a comma-separated value
-          of userIDs
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: The maximum number of elements to be returned. Required if user_id
-          is not present
-        schema:
-          type: integer
-      - name: offset
-        in: query
-        description: The offset from where to start querying the elements. Required
-          if user_id is not present
-        schema:
-          type: integer
-      responses:
-        200:
-          description: A User object if a single userID was requested, or an array of Users.
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/User'
-                  - type: array
-                    items:
-                      $ref: '#/components/schemas/User'
+- name: chats
+  description: APIs for creating, joining, removing chats and sending and receiving messages
 
+paths:
   /signup:
     post:
       tags:
@@ -118,8 +84,247 @@ paths:
         400:
           description: Non-existant combination of userID and password, or invalid parameters
           content: {}
-
-
+  /chats:
+    post:
+      tags:
+      - chats
+      summary: Creates a new chat and automatically inserts the creating user into it.
+      operationId: createChat
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The userID of the currently logged in user, that will be inserted automatically in the newly created chat.
+        schema:
+          type: string
+      - name: chat_name
+        in: query
+        required: true
+        description: The name of the chat to be created.
+        schema:
+          type: string
+      responses:
+        201:
+          description: The chat was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat_id:
+                    type: string
+                    description: The chatID of the newly created chat.
+        400:
+          description: Invalid parameters.
+        401:
+          description: Either the user isn't logged in or used a user_id parameter that is not theirs.
+        500:
+          description: Internal server error.         
+  /chats/{chat_id}:
+    post:
+      tags:
+      - chats
+      summary: Sends a message in a chat.
+      operationId: sendMessage
+      parameters:
+      - name: message_user_id
+        in: query
+        required: true
+        description: The userID of the currently logged in user, that will be inserted automatically in the newly created chat.
+        schema:
+          type: string
+      - name: message_chat_id
+        in: path
+        required: true
+        description: The chatID of the selected chat.
+        schema:
+          type: integer
+      - name: message_text
+        in: query
+        description: The content of the message to be sent.
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: The message was successfully sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat_id:
+                    type: string
+                    description: The chatID of the newly created chat.
+        400:
+          description: Invalid parameters.
+        401:
+          description: Either the user isn't logged in or used a user_id parameter that is not theirs.
+        500:
+          description: Internal server error.
+    get:
+      tags:
+      - chats
+      summary: Gets a number of messages, listed in anti-chronological order from the latest, from a chat.
+      operationId: getMessages
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The userID of the currently logged in user, that will be inserted automatically in the newly created chat.
+        schema:
+          type: string
+      - name: chat_id
+        in: path
+        required: true
+        description: The chatID of the selected chat.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The maximum number of elements to be returned.
+        required: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: The offset from where to start querying the elements.
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: The list of messages, listed in antichronological order, and the total number of messages present in the chat.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+        400:
+          description: Invalid parameters.
+        401:
+          description: Either the user isn't logged in or used a user_id parameter that is not theirs.
+    patch:
+      tags:
+      - chats
+      summary: Joins an existing chat.
+      operationId: joinChat
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The userID of the currently logged in user, that will be inserted automatically in the newly created chat.
+        schema:
+          type: string
+      - name: chat_id
+        in: path
+        required: true
+        description: The chatID of the selected chat.
+        schema:
+          type: integer
+      responses:
+        201:
+          description: Returns the updated representation of the chat with its member list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat_id:
+                    type: string
+                    description: The chatID of the joined chat.
+                  chat_name:
+                    type: string
+                    description: The chat name of the joined chat.
+                  users:
+                    type: array
+                    description: The chat members, listed by their userID.
+                    items:
+                      type: string
+        400:
+          description: Invalid parameters.
+        401:
+          description: Either the user isn't logged in or used a user_id parameter that is not theirs.
+        500:
+          description: Internal server error.   
+    delete:
+      tags:
+      - chats
+      summary: Leaves a chat, deleting it if no members are left.
+      operationId: deleteChat
+      parameters:
+      - name: user_id
+        in: query
+        required: true
+        description: The userID of the currently logged in user.
+        schema:
+          type: string
+      - name: chat_id
+        in: path
+        required: true
+        description: The chatID of the selected chat.
+        schema:
+          type: integer
+      responses:
+        200:
+          description: The chat was successfully left.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The result of the operation (whether or not the chat was also deleted).
+        400:
+          description: Invalid parameters.
+        401:
+          description: Either the user isn't logged in or used a user_id parameter that is not theirs.
+        500:
+          description: Internal server error.
+  /users:
+    get:
+      tags:
+      - users
+      summary: Retrieves one or more users from the system.
+      operationId: users
+      parameters:
+      - name: user_id
+        in: query
+        description: The userID to query the system with, or a comma-separated value
+          of userIDs
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The maximum number of elements to be returned. Required if user_id is not present
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: The offset from where to start querying the elements. Required if user_id is not present
+        schema:
+          type: integer
+      responses:
+        200:
+          description: A User object if a single userID was requested, or an array of Users.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/User'
   # Line section
   /lines:
     get:
@@ -281,8 +486,8 @@ paths:
             application/json:
               schema:
                 type: array
-                  items:
-                    $ref: '#/components/schemas/Review'
+                items:
+                  $ref: '#/components/schemas/Review'
         500:
           description: Error while getting Review. Internal Error.
           content: {}
@@ -417,12 +622,14 @@ paths:
           required: true
           schema:
             type: number
-        - name: review_image
-          in: body
-          description: The actual photo to be set as review image
-          required: true
-          schema:
-            type: JPG, PNG, GIF
+      requestBody:
+        description: A JPG, PNG, GIF form-encoded file representing the actual photo to be set as review image
+        required: true
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
       responses:
         201:
           description: Photo added to review

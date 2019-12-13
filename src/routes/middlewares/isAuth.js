@@ -37,7 +37,7 @@ module.exports = async function (routes) {
             // If there are no token you are not logged
             if (authName == undefined) {
                 const error = new Error('Please Login first');
-                error.status = 401;
+                error.status = e.code;
                 next(error);
             } else {
                 Logger.info("Logged with UserID: " + authNmae);
@@ -49,7 +49,7 @@ module.exports = async function (routes) {
 
             // If LoginError -> expired or wrong token
             if (e.constructor === LoginError) {
-                error.status = 403;
+                error.status = e.code;
             }
             next(error);
         }

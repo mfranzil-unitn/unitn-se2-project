@@ -1,6 +1,8 @@
 const User = require('@app/models/users');
 const crypto = require('crypto');
 
+const { HTTPError } = require('@app/errors');
+
 const saltLength = 16;
 
 function getNextSalt() {
@@ -16,11 +18,11 @@ function hash(password, salt) {
 
 async function authenticate(user) {
     if (!user) {
-        throw Error('User parameter required.');
+        throw new HTTPError('User parameter required.', 400);
     }
 
     if (!user.user_id || !user.user_password) {
-        throw Error('Please supply a valid User object: { user_id : String, user_password: String }');
+        throw new HTTPError('Please supply a valid User object: { user_id : String, user_password: String }', 400);
     }
 
     let query = await User.getByPrimaryKey(user.user_id);
@@ -30,17 +32,17 @@ async function authenticate(user) {
             return {};
         }
     }
-    throw Error('Wrong username or password.');
+    throw new HTTPError('Wrong username or password.', 422);
 }
 
 async function create(user) {
     if (!user) {
-        throw Error('User parameter required.');
+        throw new HTTPError('User parameter required.', 400);
     }
 
     if (!user.user_id || !user.user_name || !user.user_password) {
-        throw Error('Please supply a valid User object: { user_id : String, user_password: String, '
-            + 'user_name: String }');
+        throw new HTTPError('Please supply a valid User object: { user_id : String, user_password: String, '
+            + 'user_name: String }', 400);
     }
 
     user.user_rank = 0;
@@ -50,7 +52,7 @@ async function create(user) {
     let res = await User.insert(user);
 
     if (res != 1) {
-        throw Error("Failed to create User, may already be present.");
+        throw new HTTPError("Failed to create User, may already be present.", 409);
     }
 
     return true;
@@ -58,7 +60,7 @@ async function create(user) {
 
 async function find(query) {
     if (!query) {
-        throw Error('Please supply an array of IDS, or an Object containing limit and offset.')
+        throw new HTTPError('Please supply an array of IDS, or an Object containing limit and offset.', 400);
     } else if (!!query.limit && !!query.offset) {
         let users = await User.getAll(query.limit, query.offset);
 
@@ -94,8 +96,7 @@ async function find(query) {
             delete user['user_hash'];
             delete user['user_salt'];
         } else {
-            //TODO more precise error
-            throw Error('Cannot find User.');
+            throw new HTTPError('Cannot find User.', 404);
         }
         return user;
     }

@@ -1,26 +1,20 @@
 const Review = require('@app/models/reviews');
 const Photo = require('@app/models/photos');
 
-class MissingReviewError extends Error {
-    constructor(...args) {
-        super(...args)
-        Error.captureStackTrace(this, MissingReviewError)
-    }
-}
+const { HTTPError } = require('@app/errors');
 
 function isInteger(value) {
     return value.match(/^[0-9]+$/) != null;
 }
 
-
 async function write(review, path) {
     if (!review) {
-        throw Error('Review parameter required.');
+        throw new HTTPError('Review parameter required.', 400);
     }
 
     if (!review.review_user_id || !review.review_line_id || !review.review_rating || !review.review_description) {
-        throw Error('Please supply a valid Review object: { review_user_id : String, '
-            + 'review_line_id : Number, review_rating : Number, review_description: String }');
+        throw new HTTPError('Please supply a valid Review object: { review_user_id : String, '
+            + 'review_line_id : Number, review_rating : Number, review_description: String }', 400);
     }
 
     let res = await Review.insert(review);
@@ -38,7 +32,7 @@ async function write(review, path) {
 
 async function read(rev_id) {
     if (!rev_id) {
-        throw Error('Review parameter required.');
+        throw new HTTPError('Review parameter required.', 400);
     }
 
     let res, res1, res2;
@@ -53,14 +47,14 @@ async function read(rev_id) {
             res.review_photo_path = 'No photo provided';
         }
     } else if (typeof res === "undefined") {
-        throw new MissingReviewError('Review with this review_id not found.');
+        throw new HTTPError('Review with this review_id not found.', 404);
     }
     return res;
 }
 
 async function getAll(query) {
     if (!query || !query.limit || !query.offset || !isInteger(query.limit) || !isInteger(query.offset)) {
-        throw new Error("Please specify limit and offset first as integers");
+        throw new HTTPError("Please specify limit and offset first as integers", 400);
     }
     let res = await Review.getAll(query.limit, query.offset);
     let count_res = await Review.getCount();
@@ -76,7 +70,6 @@ async function getAll(query) {
 
 
 module.exports = {
-    MissingReviewError,
     write,
     read,
     getAll

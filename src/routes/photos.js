@@ -31,7 +31,7 @@ module.exports = async function (routes) {
 
         } catch (e) {
             let error = new Error('Error while getting photo: ' + e.message);
-            error.status = 400;
+            error.status = e.code;
             next(error);
         }
     });
@@ -47,7 +47,7 @@ module.exports = async function (routes) {
             res.status(201).json('Added image with id: ' + result + ' for review_id: ' + req.query.photo_review_id);
         } catch (e) {
             let error = new Error('Error while inserting Photo: ' + e.message);
-            error.status = 400;
+            error.status = e.code;
             next(error);
         }
     });

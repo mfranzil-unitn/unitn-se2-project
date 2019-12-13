@@ -1,15 +1,16 @@
 const Chats = require('@app/models/chats');
 const ChatMembers = require('@app/models/chatMembers');
 const Messages = require('@app/models/messages');
-const crypto = require('crypto');
+
+const { HTTPError } = require('@app/errors');
 
 async function create(query) {
     if (!query || !query.user_id || !query.chat_name) {
-        throw Error("UserID parameter required.");
+        throw new HTTPError("UserID parameter required.", 400);
     }
 
     if (query.user_id !== query.logged_user_id) {
-        throw Error("Please supply the user_id as you logged in with.");
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 
     let newChatID = await Chats.insert({
@@ -17,7 +18,7 @@ async function create(query) {
     });
 
     if (newChatID <= 0) {
-        throw Error("Failed to create a new chat. Please try again.");
+        throw new HTTPError("Failed to create a new chat. Please try again.", 500);
     }
 
     let result = await ChatMembers.insert({
@@ -27,7 +28,7 @@ async function create(query) {
 
     if (result != 1) {
         Chats.delete(newChatID);
-        throw Error("Failed to insert the user into the newly created chat. Please try again.");
+        throw new HTTPError("Failed to insert the user into the newly created chat. Please try again.", 500);
     }
 
     return {
@@ -37,11 +38,11 @@ async function create(query) {
 
 async function join(query) {
     if (!query || !query.user_id || !query.chat_id) {
-        throw Error("UserID and ChatID parameters required.");
+        throw new HTTPError("UserID and ChatID parameters required.", 400);
     }
 
     if (query.user_id !== query.logged_user_id) {
-        throw Error("Please supply the user_id as you logged in with.");
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 
     let result = await ChatMembers.insert({
@@ -50,7 +51,7 @@ async function join(query) {
     });
 
     if (result != 1) {
-        throw Error("Failed to insert the user into this chat. Please try again.");
+        throw new HTTPError("Failed to insert the user into this chat. Please try again.", 500);
     }
 
     let users = await ChatMembers.getByChat(query.chat_id);
@@ -67,12 +68,12 @@ async function join(query) {
 }
 
 async function getMessages(query) {
-    if (!query || !query.chat_id || !query.user_id || !query.count) {
-        throw Error("UserID, ChatID, count parameters required.");
+    if (!query || !query.chat_id || !query.user_id || !query.offset || !query.limit) {
+        throw new HTTPError("UserID, ChatID, limit, offset parameters required.", 400);
     }
 
     if (query.user_id !== query.logged_user_id) {
-        throw Error("Please supply the user_id as you logged in with.");
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 
     let isInChat = await ChatMembers.getByPrimaryKey({
@@ -81,10 +82,10 @@ async function getMessages(query) {
     });
 
     if (typeof isInChat === 'undefined') {
-        throw Error("User is not in the chat, please join it first.");
+        throw new HTTPError("User is not in the chat, please join it first.", 401);
     }
 
-    let messages = await Messages.getByChat(query.chat_id, query.count, 0);
+    let messages = await Messages.getByChat(query.chat_id, query.limit, query.offset);
     let totalCount = await Messages.getCount();
 
     return {
@@ -96,32 +97,32 @@ async function getMessages(query) {
 }
 
 async function sendMessage(query) {
-    if (!query || !query.message_text || !query.message_chat_id || !query.message_user_id) {
-        throw Error("Message parameter required.");
+    if (!query || !query.message_text || !query.chat_id || !query.user_id) {
+        throw new HTTPError("Message parameter required.", 400);
     }
 
-    if (query.message_user_id !== query.logged_user_id) {
-        throw Error("Please supply the user_id as you logged in with.");
+    if (query.user_id !== query.logged_user_id) {
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 
     let isInChat = await ChatMembers.getByPrimaryKey({
-        chat_member_chat_id: query.message_chat_id,
-        chat_member_user_id: query.message_user_id
+        chat_member_chat_id: query.chat_id,
+        chat_member_user_id: query.user_id
     });
 
     if (typeof isInChat === 'undefined') {
-        throw Error("User is not in the chat, please join it first.");
+        throw new HTTPError("User is not in the chat, please join it first.", 401);
     }
 
     let newMessageID = await Messages.insert({
         message_datetime: new Date(),
         message_text: query.message_text,
-        message_chat_id: query.message_chat_id,
-        message_user_id: query.message_user_id
+        message_chat_id: query.chat_id,
+        message_user_id: query.user_id
     });
 
     if (newMessageID <= 0) {
-        throw Error("Failed to send message, please try again.");
+        throw new HTTPError("Failed to send message, please try again.", 500);
     }
 
     return {
@@ -131,11 +132,11 @@ async function sendMessage(query) {
 
 async function leave(query) {
     if (!query || !query.chat_id || !query.user_id) {
-        throw Error("ChatID and UserID parameter required.");
+        throw new HTTPError("ChatID and UserID parameter required.", 400);
     }
 
     if (query.user_id !== query.logged_user_id) {
-        throw Error("Please supply the user_id as you logged in with.");
+        throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 
     let result = await ChatMembers.delete({
@@ -144,7 +145,7 @@ async function leave(query) {
     });
 
     if (result != 1) {
-        throw Error("Failed to delete the user from this chat. Please try again.");
+        throw new HTTPError("Failed to delete the user from this chat. Please try again.", 500);
     }
 
     if (parseInt(res[0].count) === 0) {
@@ -154,10 +155,14 @@ async function leave(query) {
         }
         await Chats.delete(query.chat_id);
 
-        return 2; // 2 === Utente rimosso e chat rimossa per assenza di persone;
+        return {
+            message: "Chat left succesfully and destroyed (last remaining member left)"
+        }
     }
 
-    return 1; // 1 === Utente rimosso
+    return {
+        message: "Chat left succesfully"
+    }
 }
 
 module.exports = {

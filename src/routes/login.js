@@ -27,7 +27,7 @@ module.exports = async function (routes) {
             res.status(200).json();
         } catch (e) {
             const error = new Error('Failed to login: ' + e.message);
-            error.status = 400;
+            error.status = e.code;
             next(error);
         }
     });

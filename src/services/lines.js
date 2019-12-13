@@ -1,11 +1,6 @@
 const Line = require('@app/models/lines');
 
-class MissingLineError extends Error {
-    constructor(...args) {
-        super(...args)
-        Error.captureStackTrace(this, MissingLineError)
-    }
-}
+const { HTTPError } = require('@app/errors');
 
 function isFloat(value) {
     if (!isNaN(value) && value >= 0) {
@@ -21,16 +16,16 @@ function isInteger(value) {
 
 async function place(line) {
     if (!line) {
-        throw new Error('Line parameter required.');
+        throw new HTTPError('Line parameter required.', 400);
     }
 
     if (!line.line_user_id || !line.line_start_lat || !line.line_start_lon || !line.line_end_lat
         || !line.line_end_lon || !line.line_name || !line.line_description || !isFloat(line.line_start_lat)
         || !isFloat(line.line_start_lon) || !isFloat(line.line_end_lat) || !isFloat(line.line_end_lon)
     ) {
-        throw new Error('Please supply a valid Line object: { line_user_id: String, '
+        throw new HTTPError('Please supply a valid Line object: { line_user_id: String, '
             + 'line_start_lat: Number, line_start_lon: Number, line_end_lat: Number, '
-            + 'line_end_lon: Number, line_name: String, line_description: String}');
+            + 'line_end_lon: Number, line_name: String, line_description: String}', 400);
     }
     let result = await Line.insert(line);
     console.log(result);
@@ -40,7 +35,7 @@ async function place(line) {
 
 async function getAll(query) {
     if (!query || !query.limit || !query.offset || !isInteger(query.limit) || !isInteger(query.offset)) {
-        throw new Error("Please specify limit and offset first as integers");
+        throw new HTTPError("Please specify limit and offset first as integers", 400);
     }
     let res = await Line.getAll(query.limit, query.offset);
     let count_res = await Line.getCount();
@@ -58,17 +53,16 @@ async function get(id) {
     if (parseInt(id) != NaN && id >= 0) {
         let res = await Line.getByPrimaryKey(id);
         if (typeof res === "undefined") {
-            throw new MissingLineError('Line with this LineID not found');
+            throw new HTTPError('Line with this LineID not found', 404);
         }
         return res;
     }
     else {
-        throw new Error('Please enter a valid LineID');
+        throw new HTTPError('Please enter a valid LineID', 400);
     }
 }
 
 module.exports = {
-    MissingLineError,
     place,
     getAll,
     get
