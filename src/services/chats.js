@@ -168,3 +168,4 @@ async function leave(query) {
 module.exports = {
     create, join, getMessages, sendMessage, leave
 }
+

@@ -24,3 +24,4 @@ test('invalid authentication should throw an error', async () => {
         user_password: 'nonsense password'
     })).rejects.toThrow('Wrong username or password');
 });
+

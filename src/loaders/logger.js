@@ -48,3 +48,4 @@ const LoggerInstance = winston.createLogger({
 });
 
 module.exports = LoggerInstance;
+

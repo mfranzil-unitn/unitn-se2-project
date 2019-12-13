@@ -10,3 +10,4 @@ class HTTPError extends Error {
 module.export = {
     HTTPError
 };
+

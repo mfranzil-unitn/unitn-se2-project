@@ -12,3 +12,4 @@ fs.exists(dstpath, function(exists) {
     fs.symlinkSync(srcpath, dstpath, 'dir');
   }
 });
+

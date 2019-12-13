@@ -11,3 +11,4 @@ module.exports = async function () {
     await loaders(app);
     return app;
 };
+

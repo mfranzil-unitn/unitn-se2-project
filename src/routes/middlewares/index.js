@@ -7,3 +7,4 @@ const checkAuth = require('@app/routes/middlewares/isAuth');
 module.exports = {
     checkAuth
 }
+

@@ -19,8 +19,7 @@ module.exports = async function (routes) {
                 res.status(200).json(result);
             }
         } catch (e) {
-            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
             next(error);
         }
     });
@@ -37,8 +36,7 @@ module.exports = async function (routes) {
                 res.status(200).json(result);
             }
         } catch (e) {
-            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
             next(error);
         }
     });
@@ -49,8 +47,7 @@ module.exports = async function (routes) {
                 let result = await ChatService.create(req.query);
                 res.status(201).json(result);
             } catch (e) {
-                const error = new Error('Failed to create chat: ' + e.message);
-                error.status = e.code || 500;
+                const error = new HTTPError(e.code || 500, 'Failed to create chat: ' + e.message);
                 next(error);
             }
         } else {
@@ -59,8 +56,7 @@ module.exports = async function (routes) {
                 let result = await ChatService.sendMessage(req.query);
                 res.status(201).json(result);
             } catch (e) {
-                const error = new Error('Failed to send message: ' + e.message);
-                error.status = e.code || 500;
+                const error = new HTTPError(e.code || 500, 'Failed to send message: ' + e.message);
                 next(error);
             }
         }
@@ -78,9 +74,9 @@ module.exports = async function (routes) {
                 res.status(200).json(result);
             }
         } catch (e) {
-            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
             next(error);
         }
     });
 }
+

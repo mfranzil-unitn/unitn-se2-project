@@ -11,7 +11,7 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             let result = await PlaceLineService.place(req.query);
-            res.status(201).json('Added review with id: ' + result);
+            res.status(201).json();
             UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
             const error = new HTTPError(e.code || 500, 'Wrong line info: ' + e.message);
@@ -45,3 +45,4 @@ module.exports = async function (routes) {
         }
     });
 };
+

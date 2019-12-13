@@ -3,3 +3,4 @@ test('app.js should return an instance of the application', async () => {
     expect(app).toBeDefined();
     expect(app.get).toBeInstanceOf(Function);
 });
+

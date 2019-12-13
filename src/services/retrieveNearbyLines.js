@@ -29,3 +29,4 @@ async function retrieve(point) {
 module.exports = {
     retrieve
 };
+

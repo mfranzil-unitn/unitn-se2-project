@@ -44,3 +44,4 @@ module.exports = async function (routes) {
         next();
     });
 };
+

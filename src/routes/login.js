@@ -30,9 +30,5 @@ module.exports = async function (routes) {
             next(error);
         }
     });
-    route.get('/wow/', async (req, res, next) => {
-        UserService.increaseInteractions(req.query.logged_user_id);
-        res.status(200).json({ interactions: user.user_interactions });
-    });
 };
 

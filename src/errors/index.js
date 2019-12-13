@@ -15,3 +15,4 @@ Object.defineProperty(HTTPError.prototype, 'name', {
 module.exports = {
     HTTPError
 }
+

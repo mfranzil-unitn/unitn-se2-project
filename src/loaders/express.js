@@ -67,3 +67,4 @@ async function loader(app) {
 }
 
 module.exports = loader;
+
