@@ -38,11 +38,7 @@ module.exports = async function (routes) {
             }
         } catch (e) {
             let error = new Error('Error while returning the review: ' + e.message);
-            if (e.constructor === ReviewService.MissingReviewError) {
-                error.status = e.code || 500;
-            } else {
-                error.status = e.code || 500;
-            }
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -50,12 +46,12 @@ module.exports = async function (routes) {
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
             let result;
-            if(req.file) {
+            if (req.file) {
                 const photo_path = req.file.path
                 result = await ReviewService.write(req.query, photo_path);
                 res.status(201).json('Added review with id: ' + result + ' And an image with  name:' + req.file.filename);
             }
-            else{
+            else {
                 result = await ReviewService.write(req.query, null);
                 res.status(201).json('Added review with id: ' + result);
             }
