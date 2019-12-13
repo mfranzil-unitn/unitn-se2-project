@@ -25,12 +25,12 @@ module.exports = async function (routes) {
         try {
             let idRichiesta = req.query.photo_review_id;
 
-            let result = await PhotoService.get(idRichiesta);
+            let result = await PhotoService.getByReviewId(idRichiesta);
 
-            res.status(200).json('Image path: ' + result);
+            res.status(200).json('Image path(s): ' + result);
 
         } catch (e) {
-            let error = new Error('Error in getting photo: ' + e.message);
+            let error = new Error('Error while getting photo: ' + e.message);
             error.status = 400;
             next(error);
         }
@@ -39,6 +39,9 @@ module.exports = async function (routes) {
 
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
+            if(!req.file){
+                throw Error('Please provide an image');
+            }
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);
             res.status(201).json('Added image with id: ' + result + ' for review_id: ' + req.query.photo_review_id);

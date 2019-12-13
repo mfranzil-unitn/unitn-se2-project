@@ -5,7 +5,7 @@ const PlaceLineService = require('@app/services/lines');
 const route = Router();
 
 module.exports = async function (routes) {
-    routes.use('/line', route);
+    routes.use('/lines', route);
 
     route.post('/', async (req, res, next) => {
         try {

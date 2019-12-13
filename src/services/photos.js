@@ -24,15 +24,27 @@ async function get(primaryKey) {
     if (!primaryKey || typeof(primaryKey) === "undefined") {
         throw Error('No PK');
     }
-    let path = await Photo.getByPrimaryKey(primaryKey).path;
+    let path = await Photo.getByPrimaryKey(primaryKey).photo_path;
     if (typeof(path) === "undefined") {
         throw new Error('No image found');
     }
     return path;
+}
 
+async function getByReviewId(reviewId) {
+    if (!reviewId || typeof(reviewId) === "undefined") {
+        throw Error('No PK');
+    }
+    let path = await Photo.getPathByReviewId(reviewId);
+    if (typeof(path) === "undefined") {
+        console.log(path);
+        throw new Error('No image found for this reviewId');
+    }
+    return path;
 }
 
 module.exports = {
     add,
-    get
+    get,
+    getByReviewId
 };

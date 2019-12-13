@@ -72,10 +72,20 @@ module.exports = {
             return undefined;
         }
     },
-    getByReviewId: async(review_id) =>{
+    getPathByReviewId: async(review_id) =>{
         try{
-            let res = await db.executeQuery(queries.getByReviewId,parseInt(review_id));
-            return res.rows[0];
+            let res = await db.executeQuery(queries.getByReviewId, parseInt(review_id));
+            let allPaths = "";
+            if (res.rowCount === 0) {
+                return "No photos associated";
+            } else {
+                for (let i=0; i<res.rowCount; i++) {
+                    allPaths += res.rows[i].photo_path + ( i===(res.rowCount-1) ? "" : "; ");
+                }
+                
+                return allPaths;
+            }
+
         } catch (error){
             Logger.error(error.stack);
             return undefined;

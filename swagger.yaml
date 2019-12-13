@@ -16,6 +16,8 @@ tags:
   description: APIs for creating and retrieving lines
 - name: review
   description: APIs for creating and retrieving reviews
+- name: photo
+  description: APIs for adding and retrieving photos
 - name: users
   description: APIs for retrieving users
 - name: auth
@@ -57,7 +59,7 @@ paths:
                   - type: array
                     items:
                       $ref: '#/components/schemas/User'
-                  
+
   /signup:
     post:
       tags:
@@ -116,19 +118,49 @@ paths:
         400:
           description: Non-existant combination of userID and password, or invalid parameters
           content: {}
-  /line:
+
+
+  # Line section
+  /lines:
     get:
       tags:
       - line
       summary: Get all lines
+      description: This can only be done by the logged user.
       operationId: getAllLines
+      parameters:
+      - name: limit
+        in: query
+        description: The offset in selecting lines
+        required: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: The number of selected lines
+        required: true
+        schema:
+          type: integer
       responses:
         200:
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Line'
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Line'
+                  metadata:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+        401:
+          description: Unauthorized
+          content: {}
         500:
           description: Error while getting Line
           content: {}
@@ -136,7 +168,7 @@ paths:
       tags:
       - line
       summary: Create new geolocalized line
-      description: This can only be done by the logged in user.
+      description: This can only be done by the logged user.
       operationId: createLine
       parameters:
       - name: line_user_id
@@ -188,7 +220,11 @@ paths:
         400:
           description: Wrong line info
           content: {}
-  /line/{lineID}:
+        401:
+          description: Unauthorized
+          content: {}
+
+  /lines/{lineID}:
     get:
       tags:
       - line
@@ -211,24 +247,44 @@ paths:
         400:
           description: Error while getting Line
           content: {}
+        401:
+          description: Unauthorized
+          content: {}
         404:
           description: Line with provided LineID not found
           content: {}
+
+#Review's Section
   /review:
     get:
       tags:
       - review
-      summary: Get all reviews
+      summary: Get all reviews (without image path).
       operationId: getAllReviews
+      parameters:
+          - name: limit
+            in: query
+            description: limit number for showing reviews
+            required: true
+            schema:
+                type: number
+          - name: offset
+            in: query
+            description: offset number for showing reviews.
+            required: true
+            schema:
+                type: number
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                type: array
+                  items:
+                    $ref: '#/components/schemas/Review'
         500:
-          description: Error while getting Review
+          description: Error while getting Review. Internal Error.
           content: {}
     post:
       tags:
@@ -257,10 +313,16 @@ paths:
           type: number
       - name: review_description
         in: query
-        description: 'Line''s description '
+        description: Line's description
         required: true
         schema:
           type: string
+      - name: review_image
+        in: query
+        description: Line's picture
+        required: false
+        schema:
+            type: object
       responses:
         201:
           description: successful operation, review created
@@ -272,7 +334,7 @@ paths:
     get:
       tags:
       - review
-      summary: Get review by review_id
+      summary: Get review by review_id, if any photo is associated to it, it will also show the path for those pictures.
       operationId: getReviewByID
       parameters:
       - name: review_id
@@ -287,13 +349,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Review'
+                $ref: '#/components/schemas/Review_With_Photo_Path'
         400:
-          description: Error while getting Review
+          description: Error while getting Review. Review_Id not provided.
           content: {}
-        404:
+        500:
           description: Review with provided ReviewID not found
           content: {}
+
   /retrieve:
     get:
       tags:
@@ -317,6 +380,52 @@ paths:
       responses:
         201:
           description: Successfull operation, retrieving nearby lines...
+        400:
+          description: Wrong request
+
+  /photo:
+    get:
+      tags:
+        - review
+        - photo
+      summary: Retrieve review photo path.
+      description: Allows to retrieve the photo path of an existing review if it exists.
+      operationId: photoRetrieve
+      parameters:
+        - name: review_id
+          in: query
+          description: The id of the review of which you want the image.
+          required: true
+          schema:
+            type: number
+      responses:
+        201:
+          description: Photo path returned
+        400:
+          description: Wrong request
+    post:
+      tags:
+        - review
+        - photo
+      summary: Insert photo of review.
+      description: Allows to insert a photo of an existing review.
+      operationId: photoInsert
+      parameters:
+        - name: photo_review_id
+          in: query
+          description: The id of the review you want to add the photo.
+          required: true
+          schema:
+            type: number
+        - name: review_image
+          in: body
+          description: The actual photo to be set as review image
+          required: true
+          schema:
+            type: JPG, PNG, GIF
+      responses:
+        201:
+          description: Photo added to review
         400:
           description: Wrong request
 
@@ -372,3 +481,32 @@ components:
           format: int64
         review_description:
           type: string
+    Review_With_Photo_Path:
+        type: object
+        properties:
+            review_id:
+                type: integer
+                format: int64
+            review_user_id:
+                type: string
+            review_line_id:
+                type: integer
+                format: int64
+            review_rating:
+                type: integer
+                format: int64
+            review_description:
+                type: string
+            review_photo_path:
+                type: string
+    Photo:
+      type: object
+      properties:
+        photo_id:
+         type: integer
+         format: int64
+        photo_review_id:
+         type: integer
+         format: int64
+        photo_path:
+         type: string
