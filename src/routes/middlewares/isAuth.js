@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Logger = require('@app/loaders/logger');
+const HTTPError = require('@app/utils').HTTPError;
 
 // Auth using cookies
 const isAuth = req => {

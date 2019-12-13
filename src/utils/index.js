@@ -4,10 +4,11 @@ class HTTPError extends Error {
         this.name = this.constructor.name;
         this.status = status;
         this.message = message;
+        // console.log(this);
     }
 }
 
-module.export = {
+module.exports = {
     HTTPError
 };
 

@@ -2,6 +2,8 @@ const { Router } = require('express');
 
 const PlaceLineService = require('@app/services/lines');
 const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
+
 
 const route = Router();
 
@@ -27,7 +29,7 @@ module.exports = async function (routes) {
             try {
                 result = await PlaceLineService.getAll(req.query);
                 res.status(200).json(result);
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Error while getting Lines: ' + e.message);
                 next(error);
@@ -37,7 +39,7 @@ module.exports = async function (routes) {
             try {
                 result = await PlaceLineService.get(req.path.replace('/', ''));
                 res.status(200).json(result);
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Error while getting Line: ' + e.message);
                 next(error);

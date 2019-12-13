@@ -1,6 +1,8 @@
 const { Router } = require('express');
 
 const ChatService = require('@app/services/chats');
+const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
 
 const route = Router();
 
@@ -10,13 +12,13 @@ module.exports = async function (routes) {
     route.patch('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                res.status(404).json({
-                    message: "Please perform a PATCH request to a valid chat_id."
-                });
+                const error = new HTTPError(404, "Please perform a PATCH request to a valid chat_id.");
+                next(error);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.join(req.query);
                 res.status(200).json(result);
+                UserService.increaseInteractions(req.query.logged_user_id);
             }
         } catch (e) {
             const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
@@ -27,9 +29,8 @@ module.exports = async function (routes) {
     route.delete('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                res.status(404).json({
-                    message: "Please perform a DELETE request to a valid chat_id."
-                }); 
+                const error = new HTTPError(404, "Please perform a DELETE request to a valid chat_id.");
+                next(error);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 result = await ChatService.leave(req.query);
@@ -46,6 +47,7 @@ module.exports = async function (routes) {
             try {
                 let result = await ChatService.create(req.query);
                 res.status(201).json(result);
+                UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Failed to create chat: ' + e.message);
                 next(error);
@@ -55,6 +57,7 @@ module.exports = async function (routes) {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.sendMessage(req.query);
                 res.status(201).json(result);
+                UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Failed to send message: ' + e.message);
                 next(error);
@@ -65,9 +68,8 @@ module.exports = async function (routes) {
     route.get('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                res.status(404).json({
-                    message: "Please perform a GET request to a valid chat_id."
-                });
+                const error = new HTTPError(404, "Please perform a GET request to a valid chat_id.");
+                next(error);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.getMessages(req.query);

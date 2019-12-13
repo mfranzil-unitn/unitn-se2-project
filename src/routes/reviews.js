@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const path = require('path');
 
 const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
@@ -31,14 +32,14 @@ module.exports = async function (routes) {
             if (req.path === '/') {
                 result = await ReviewService.getAll(req.query);
                 res.status(200).json(result);
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             } else {
                 result = await ReviewService.read(req.path.replace('/', ''));
                 if (!result) {
                     throw Error('Invalid id');
                 }
                 res.status(200).json(result);
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             }
         } catch (e) {
             let error = new HTTPError(e.code || 500, 'Error while returning the review: ' + e.message);
@@ -53,12 +54,12 @@ module.exports = async function (routes) {
                 const photo_path = req.file.path;
                 result = await ReviewService.write(req.query, photo_path);
                 res.status(201).json();
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             }
             else {
                 result = await ReviewService.write(req.query, null);
                 res.status(201).json('Added review with id: ' + result);
-                // inc
+                UserService.increaseInteractions(req.query.logged_user_id);
             }
         } catch (e) {
             let error = new Error(e.code || 500, 'Error while inserting Review: ' + e.message);

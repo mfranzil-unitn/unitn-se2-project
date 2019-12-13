@@ -4,6 +4,7 @@ const { Router } = require('express');
 const jwt = require('jsonwebtoken')
 
 const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
 
 const route = Router();
 

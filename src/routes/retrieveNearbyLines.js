@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const RetrieveService = require('@app/services/retrieveNearbyLines');
+const HTTPError = require('@app/utils').HTTPError;
 
 const route = Router();
 

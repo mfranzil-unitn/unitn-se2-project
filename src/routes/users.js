@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
 
 const route = Router();
 

@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const path = require('path');
 
 const UserService = require('@app/services/users');
+const HTTPError = require('@app/utils').HTTPError;
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
@@ -44,7 +45,7 @@ module.exports = async function (routes) {
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);
             res.status(201).json(result);
-            // inc
+            UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
             let error = new HTTPError(e.code || 500, 'Error while inserting Photo: ' + e.message);
             next(error);
