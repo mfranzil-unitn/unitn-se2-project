@@ -7,7 +7,9 @@ info:
     on a map.
 
     To get started, POST to /signup with a new user_id, user_name and user_password and
-    authenticate with /login.
+    authenticate with /login with user_id and user_password. Credentials are stored using hash and salt.
+
+    All APIs others that /signup and /login require authentication with cookies. If SwaggerHub raises issues with cookies, please use Postman to use these APIs.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
