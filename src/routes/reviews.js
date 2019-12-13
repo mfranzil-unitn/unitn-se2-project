@@ -58,7 +58,7 @@ module.exports = async function (routes) {
             }
             else {
                 result = await ReviewService.write(req.query, null);
-                res.status(201).json('Added review with id: ' + result);
+                res.status(201).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
             }
         } catch (e) {

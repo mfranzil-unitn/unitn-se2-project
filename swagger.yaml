@@ -386,8 +386,7 @@ paths:
     post:
       tags:
       - line
-      summary: Creates new geolocalized line
-      description: This can only be done by the logged user.
+      summary: Creates new geolocalized line.
       operationId: createLine
       parameters:
       - name: line_user_id
@@ -524,7 +523,7 @@ paths:
       tags:
       - review
       summary: Create new review
-      description: Create a new review (this can only be done by the logged in user).
+      description: Create a new review.
       operationId: createReview
       parameters:
       - name: review_user_id
