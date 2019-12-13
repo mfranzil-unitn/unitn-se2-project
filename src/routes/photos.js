@@ -19,7 +19,7 @@ const PhotoService = require('@app/services/photos');
 const route = Router();
 
 module.exports = async function (routes) {
-    routes.use('/photo', route);
+    routes.use('/photos', route);
 
     route.get('/', async(req, res, next) => {
         try {

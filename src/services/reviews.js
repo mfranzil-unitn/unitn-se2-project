@@ -27,10 +27,15 @@ async function write(review, path) {
         pic.photo_path = path;
         let insert_id = await Photo.insert(pic);
         console.log('Added photo for review: ' + res + ' with id: ' + insert_id);
+        return {
+            review_id: res,
+            photo_path: path
+        }
+    } else {
+        return {
+            review_id: res
+        };
     }
-    return {
-        review_id: res
-    };
 }
 
 async function read(rev_id) {
@@ -43,10 +48,10 @@ async function read(rev_id) {
         res1 = await Review.getByPrimaryKey(rev_id);
         res2 = await Photo.getPathByReviewId(rev_id);
         res = res1;
-        if(res2) {
+        if (res2) {
             res.review_photo_path = res2.photo_path;
         }
-        else{
+        else {
             res.review_photo_path = 'No photo provided';
         }
     } else if (typeof res === "undefined") {

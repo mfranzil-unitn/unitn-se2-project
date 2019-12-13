@@ -59,8 +59,8 @@ async function create(user) {
 }
 
 async function find(query) {
-    if (!query) {
-        throw new HTTPError('Please supply an array of IDS, or an Object containing limit and offset.', 400);
+    if (!query.user_id && !query.limit && !query.offset) {
+        throw new HTTPError('Please supply a comma-separated parameter of IDS in user_id, or limit and offset.', 400);
     } else if (!!query.limit && !!query.offset) {
         let users = await User.getAll(query.limit, query.offset);
 

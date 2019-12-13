@@ -5,6 +5,9 @@ info:
     for [slackliners](https://en.wikipedia.org/wiki/Slacklining) where they can share
     their slackline position with other members, along with rating and reviewing them
     on a map.
+
+    To get started, POST to /signup with a new user_id, user_name and user_password and
+    authenticate with /login.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -565,6 +568,9 @@ paths:
                   review_id:
                     type: integer
                     description: The reviewID of the newly created review.
+                  photo_path:
+                    type: string
+                    description: The photo path of the photo, if one was provided.
         400:
           description: Invalid parameters.
         401:

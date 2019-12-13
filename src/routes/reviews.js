@@ -21,7 +21,7 @@ const ReviewService = require('@app/services/reviews');
 const route = Router();
 
 module.exports = async function (routes) {
-    routes.use('/review', route);
+    routes.use('/reviews', route);
 
     route.get('/*', async (req, res, next) => {
         try {
@@ -47,9 +47,9 @@ module.exports = async function (routes) {
         try {
             let result;
             if (req.file) {
-                const photo_path = req.file.path
+                const photo_path = req.file.path;
                 result = await ReviewService.write(req.query, photo_path);
-                res.status(201).json('Added review with id: ' + result + ' And an image with  name:' + req.file.filename);
+                res.status(201).json();
             }
             else {
                 result = await ReviewService.write(req.query, null);
