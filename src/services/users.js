@@ -45,7 +45,7 @@ async function create(user) {
             + 'user_name: String }', 400);
     }
 
-    user.user_interactions = 0;
+    user.user_rank = 0;
     user.user_salt = getNextSalt();
     user.user_hash = hash(user.user_password, user.user_salt);
 
@@ -104,17 +104,17 @@ async function find(query) {
 
 
 function getRank(user) {
-    if(user.user_interactions <= 10) {
+    if(user.user_rank <= 10) {
         return "Newbie";
-    } else if (user.user_interactions <= 30) {
+    } else if (user.user_rank <= 30) {
         return "Interested";
-    } else if (user.user_interactions <= 50) {
+    } else if (user.user_rank <= 50) {
         return "Acquainted";
-    } else if (user.user_interactions <= 100) {
+    } else if (user.user_rank <= 100) {
         return "Bro";
-    } else if (user.user_interactions <= 500) {
+    } else if (user.user_rank <= 500) {
         return "Expert";
-    } else if (user.user_interactions <= 1000) {
+    } else if (user.user_rank <= 1000) {
         return "Advanced";
     } else {
         return "Master";
@@ -124,7 +124,7 @@ function getRank(user) {
 
 async function increaseInteractions(user_id) {
     user = User.getByPrimaryKey(user_id);
-    user.user_interactions += 1;
+    user.user_rank += 1;
     return await User.update(user);
 }
 
