@@ -123,7 +123,7 @@ function getRank(user) {
 
 
 async function increaseInteractions(user_id) {
-    user = User.getByPrimaryKey(user_id);
+    user = await User.getByPrimaryKey(user_id);
     user.user_rank += 1;
     return await User.update(user);
 }

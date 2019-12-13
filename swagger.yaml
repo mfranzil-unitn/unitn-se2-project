@@ -13,7 +13,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "v1"
 servers:
-- url: https://se2-project.herokuapp.com/api/v1/users
+- url: https://se2-project.herokuapp.com/api/v1
 tags:
 - name: auth
   description: APIs for creating new users and authenticating to the system
