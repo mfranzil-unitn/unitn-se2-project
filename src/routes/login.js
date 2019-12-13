@@ -30,6 +30,5 @@ module.exports = async function (routes) {
             error.status = 400;
             next(error);
         }
-
     });
 };

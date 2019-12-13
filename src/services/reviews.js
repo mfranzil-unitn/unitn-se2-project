@@ -8,7 +8,7 @@ class MissingReviewError extends Error {
     }
 }
 
-function isInteger(value){
+function isInteger(value) {
     return value.match(/^[0-9]+$/) != null;
 }
 
@@ -41,7 +41,7 @@ async function read(rev_id) {
         throw Error('Review parameter required.');
     }
 
-    let res,res1,res2;
+    let res, res1, res2;
     if (parseInt(rev_id) !== NaN && rev_id >= 0) {
         res1 = await Review.getByPrimaryKey(rev_id);
         res2 = await Photo.getByReviewId(rev_id);

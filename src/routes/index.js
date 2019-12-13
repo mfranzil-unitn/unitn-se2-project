@@ -8,6 +8,7 @@ const lines = require('@app/routes/lines');
 const reviews = require('@app/routes/reviews');
 const retrieve = require('@app/routes/retrieveNearbyLines');
 const photo = require('@app/routes/photos');
+const chats = require('@app/routes/chats');
 
 module.exports = () => {
     const routes = Router();
@@ -19,6 +20,7 @@ module.exports = () => {
     reviews(routes);
     retrieve(routes);
     photo(routes);
-
+    chats(routes);
+    
     return routes;
 };

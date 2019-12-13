@@ -8,8 +8,12 @@ const queries = {
         + " = ($2, $3, $4, $5) WHERE message_id = $1;",
     delete: "DELETE FROM message WHERE message_id = $1;",
     getByPrimaryKey: "SELECT * FROM message WHERE message_id = $1;",
-    getAll: "SELECT * FROM message;",
-    getCount: "SELECT COUNT(*) FROM message;"
+    getAll: "SELECT * FROM message ORDER BY message_datetime DESC;",
+    getAllLimited: "SELECT * FROM message LIMIT $1 OFFSET $2 ORDER BY message_datetime DESC;",
+    getCount: "SELECT COUNT(*) FROM message;",
+    getByChat: "SELECT * FROM message WHERE message_chat_id = $1 ORDER BY message_datetime DESC;",
+    getByChatLimited: "SELECT * FROM message WHERE message_chat_id = $1 LIMIT $2 OFFSET $3"
+        + " ORDER BY message_datetime DESC;"
 };
 
 // message = { message_id : Number, message_datetime : Date, message_text : String,
@@ -56,9 +60,14 @@ module.exports = {
             return undefined;
         }
     },
-    getAll: async () => {
+    getAll: async (limit, offset) => {
         try {
-            let res = await db.executeQuery(queries.getAll);
+            let res = undefined;
+            if (!!limit && !!offset) {
+                res = await db.executeQuery(queries.getAllLimited, limit, offset);
+            } else {
+                res = await db.executeQuery(queries.getAll);
+            }
             return res.rows;
         } catch (error) {
             Logger.error(error.stack);
@@ -73,5 +82,19 @@ module.exports = {
             Logger.error(error.stack);
             return undefined;
         }
-    }
+    },
+    getByChat: async (chat_id, limit, offset) => {
+        try {
+            let res = undefined;
+            if (!!limit && !!offset) {
+                res = await db.executeQuery(queries.getByChatLimited, chat_id, limit, offset);
+            } else {
+                res = await db.executeQuery(queries.getByChat, chat_id);
+            }
+            return res.rows;
+        } catch (error) {
+            Logger.error(error.stack);
+            return undefined;
+        }
+    },
 }

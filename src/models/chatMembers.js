@@ -9,7 +9,9 @@ const queries = {
     delete: "DELETE FROM chat_member WHERE chat_member_chat_id = $1 AND chat_member_user_id = $2;",
     getByPrimaryKey: "SELECT * FROM chat_member WHERE chat_member_chat_id = $1 AND chat_member_user_id = $2",
     getAll: "SELECT * FROM chat_member;",
-    getCount: "SELECT COUNT(*) FROM chat_member;"
+    getCount: "SELECT COUNT(*) FROM chat_member;",
+    getChatMemberCount: "SELECT COUNT(*) FROM chat_member where chat_member_chat_id = $1",
+    getByChat: "SELECT * FROM chat_member where chat_member_chat_id = $1"
 };
 
 // chat_member = { chat_member_chat_id : Number, chat_member_user_id : String };
@@ -67,6 +69,24 @@ module.exports = {
     getCount: async () => {
         try {
             let res = await db.executeQuery(queries.getCount);
+            return res.rows;
+        } catch (error) {
+            Logger.error(error.stack);
+            return undefined;
+        }
+    },
+    getChatMemberCount: async (chat_id) => {
+        try {
+            let res = await db.executeQuery(queries.getChatMemberCount, chat_id);
+            return res.rows;
+        } catch (error) {
+            Logger.error(error.stack);
+            return undefined;
+        }
+    },
+    getByChat: async (chat_id) => {
+        try {
+            let res = await db.executeQuery(queries.getByChat, chat_id);
             return res.rows;
         } catch (error) {
             Logger.error(error.stack);

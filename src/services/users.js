@@ -47,7 +47,13 @@ async function create(user) {
     user.user_salt = getNextSalt();
     user.user_hash = hash(user.user_password, user.user_salt);
 
-    return await User.insert(user);
+    let res = await User.insert(user);
+
+    if (res != 1) {
+        throw Error("Failed to create User, may already be present.");
+    }
+
+    return true;
 }
 
 async function find(query) {

@@ -32,13 +32,16 @@ const isAuth = req => {
 module.exports = async function (routes) {
     routes.use(async (req, res, next) => {
         try {
-            Logger.info("Logged with UserID: " + isAuth(req));
+            const authName = isAuth(req);
 
             // If there are no token you are not logged
-            if (isAuth(req) == undefined) {
+            if (authName == undefined) {
                 const error = new Error('Please Login first');
                 error.status = 401;
                 next(error);
+            } else {
+                Logger.info("Logged with UserID: " + authNmae);
+                req.query.logged_user_id = authName;
             }
         }
         catch (e) {
