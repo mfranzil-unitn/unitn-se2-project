@@ -26,9 +26,13 @@ module.exports = async function (routes) {
             }
             res.status(204).json();
         } catch (e) {
-            const error = new Error('Failed to login: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to login: ' + e.message);
             next(error);
         }
     });
+    route.get('/wow/', async (req, res, next) => {
+        UserService.increaseInteractions(req.query.logged_user_id);
+        res.status(200).json({ interactions: user.user_interactions });
+    });
 };
+

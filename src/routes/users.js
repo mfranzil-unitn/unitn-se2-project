@@ -26,8 +26,7 @@ module.exports = async function (routes) {
             const users = await UserService.find(query);
             res.status(200).json(users);
         } catch (e) {
-            const error = new Error('Failed to retrieve users: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to retrieve users: ' + e.message);
             next(error);
         }
     });

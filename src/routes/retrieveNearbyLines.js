@@ -12,8 +12,7 @@ module.exports = async function (routes) {
             const result = await RetrieveService.retrieve(req.query);
             res.status(200).json(result);
         } catch (e) {
-            const error = new Error('Wrong retrieving info: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Wrong retrieving info: ' + e.message);
             next(error);
         }
     });

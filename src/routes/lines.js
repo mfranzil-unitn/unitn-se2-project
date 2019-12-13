@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const PlaceLineService = require('@app/services/lines');
+const UserService = require('@app/services/users');
 
 const route = Router();
 
@@ -10,11 +11,11 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             let result = await PlaceLineService.place(req.query);
-            res.status(201).json();
+            res.status(201).json('Added review with id: ' + result);
+            UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
-            const error = new Error('Wrong line info: ' + e.message);
+            const error = new HTTPError(e.code || 500, 'Wrong line info: ' + e.message);
             console.log(e);
-            error.status = e.code || 500;
             next(error);
         }
     });
@@ -26,9 +27,9 @@ module.exports = async function (routes) {
             try {
                 result = await PlaceLineService.getAll(req.query);
                 res.status(200).json(result);
+                // inc
             } catch (e) {
-                const error = new Error('Error while getting Lines: ' + e.message);
-                error.status = e.code || 500;
+                const error = new HTTPError(e.code || 500, 'Error while getting Lines: ' + e.message);
                 next(error);
             }
         }
@@ -36,9 +37,9 @@ module.exports = async function (routes) {
             try {
                 result = await PlaceLineService.get(req.path.replace('/', ''));
                 res.status(200).json(result);
+                // inc
             } catch (e) {
-                const error = new Error('Error while getting Line: ' + e.message);
-                error.status = e.code || 500;
+                const error = new HTTPError(e.code || 500, 'Error while getting Line: ' + e.message);
                 next(error);
             }
         }

@@ -29,8 +29,7 @@ module.exports = async function (routes) {
 
             // If there are no token you are not logged
             if (authName == undefined) {
-                const error = new Error('Please Login first');
-                error.status = 401;
+                const error = new HTTPError(401, 'Please Login first');
                 next(error);
             } else {
                 Logger.info("Logged with UserID: " + authName);

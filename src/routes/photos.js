@@ -4,6 +4,8 @@ const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
 
+const UserService = require('@app/services/users');
+
 const storage = multer.diskStorage({
     destination: 'uploads/',
     filename: function (req, file, cb) {
@@ -24,12 +26,11 @@ module.exports = async function (routes) {
     route.get('/', async(req, res, next) => {
         try {
             let idRichiesta = req.query.photo_review_id;
-
             let result = await PhotoService.getByReviewId(idRichiesta);
             res.status(200).json(result);
+            UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
-            let error = new Error('Error while getting photo: ' + e.message);
-            error.status = e.code || 500;
+            let error = new HTTPError(e.code || 500, 'Error while getting photo: ' + e.message);
             next(error);
         }
     });
@@ -43,9 +44,9 @@ module.exports = async function (routes) {
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);
             res.status(201).json(result);
+            // inc
         } catch (e) {
-            let error = new Error('Error while inserting Photo: ' + e.message);
-            error.status = e.code || 500;
+            let error = new HTTPError(e.code || 500, 'Error while inserting Photo: ' + e.message);
             next(error);
         }
     });

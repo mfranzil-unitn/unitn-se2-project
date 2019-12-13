@@ -4,9 +4,9 @@ const Logger = require('@app/loaders/logger');
 // jwt / express-jwt
 
 const queries = {
-    insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_rank, user_name)"
+    insert: "INSERT INTO user_ (user_id, user_hash, user_salt, user_interactions, user_name)"
         + " VALUES ($1, $2, $3, $4, $5)",
-    update: "UPDATE user_ SET (user_hash, user_salt, user_rank, user_name)"
+    update: "UPDATE user_ SET (user_hash, user_salt, user_interactions, user_name)"
         + " = ($2, $3, $4, $5) WHERE user_id = $1;",
     delete: "DELETE FROM user_ WHERE user_id = $1;",
     getByPrimaryKey: "SELECT * FROM user_ WHERE user_id = $1",
@@ -15,21 +15,21 @@ const queries = {
     getCount: "SELECT COUNT(*) FROM user_;"
 };
 
-// user = { user_id : String, user_hash: String, user_salt: String, user_rank: String, user_name: String }
+// user = { user_id : String, user_hash: String, user_salt: String, user_interactions: String, user_name: String }
 
 module.exports = {
-    insert: async ({ user_id, user_hash, user_salt, user_rank, user_name }) => {
+    insert: async ({ user_id, user_hash, user_salt, user_interactions, user_name }) => {
         try {
-            let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_rank, user_name);
+            let res = await db.executeQuery(queries.insert, user_id, user_hash, user_salt, user_interactions, user_name);
             return res.rowCount;
         } catch (error) {
             Logger.error(error.stack);
             return -1;
         }
     },
-    update: async ({ user_id, user_hash, user_salt, user_rank, user_name }) => {
+    update: async ({ user_id, user_hash, user_salt, user_interactions, user_name }) => {
         try {
-            let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_rank, user_name);
+            let res = await db.executeQuery(queries.update, user_id, user_hash, user_salt, user_interactions, user_name);
             return res.rowCount;
         } catch (error) {
             Logger.error(error.stack);

@@ -11,9 +11,9 @@ module.exports = async function (routes) {
         try {
             await UserService.create(req.query);
             res.status(201).json();
+            // inc
         } catch (e) {
-            const error = new Error('Failed to create new user: ' + e.message);
-            error.status = e.code || 500;
+            const error = new HTTPError(e.code || 500, 'Failed to create new user: ' + e.message);
             next(error);
         }
     });
