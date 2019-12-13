@@ -29,7 +29,7 @@ module.exports = async function (routes) {
             let idRichiesta = req.query.photo_review_id;
             let result = await PhotoService.getByReviewId(idRichiesta);
             res.status(200).json(result);
-            UserService.increaseInteractions(req.query.logged_user_id);
+            await UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
             let error = new HTTPError(e.code || 500, 'Error while getting photo: ' + e.message);
             next(error);
@@ -45,7 +45,7 @@ module.exports = async function (routes) {
             const photo_path = req.file.path;
             let result = await PhotoService.add(req.query.photo_review_id, photo_path);
             res.status(201).json(result);
-            UserService.increaseInteractions(req.query.logged_user_id);
+            await UserService.increaseInteractions(req.query.logged_user_id);
         } catch (e) {
             let error = new HTTPError(e.code || 500, 'Error while inserting Photo: ' + e.message);
             next(error);

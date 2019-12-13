@@ -18,7 +18,7 @@ module.exports = async function (routes) {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.join(req.query);
                 res.status(200).json(result);
-                UserService.increaseInteractions(req.query.logged_user_id);
+                await UserService.increaseInteractions(req.query.logged_user_id);
             }
         } catch (e) {
             const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
@@ -47,7 +47,7 @@ module.exports = async function (routes) {
             try {
                 let result = await ChatService.create(req.query);
                 res.status(201).json(result);
-                UserService.increaseInteractions(req.query.logged_user_id);
+                await UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Failed to create chat: ' + e.message);
                 next(error);
@@ -57,7 +57,7 @@ module.exports = async function (routes) {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.sendMessage(req.query);
                 res.status(201).json(result);
-                UserService.increaseInteractions(req.query.logged_user_id);
+                await UserService.increaseInteractions(req.query.logged_user_id);
             } catch (e) {
                 const error = new HTTPError(e.code || 500, 'Failed to send message: ' + e.message);
                 next(error);
