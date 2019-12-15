@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const ChatService = require('@app/services/chats');
 const UserService = require('@app/services/users');
-const HTTPError = require('@app/utils').HTTPError;
+const { HTTPError } = require('@app/errors');
 
 const route = Router();
 
@@ -12,16 +12,16 @@ module.exports = async function (routes) {
     route.patch('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                const error = new HTTPError(404, "Please perform a PATCH request to a valid chat_id.");
-                next(error);
+                throw new HTTPError("Please perform a PATCH request to a valid chat_id.", 404);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.join(req.query);
-                res.status(200).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(200).json(result);
             }
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
+            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -29,15 +29,15 @@ module.exports = async function (routes) {
     route.delete('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                const error = new HTTPError(404, "Please perform a DELETE request to a valid chat_id.");
-                next(error);
+                throw new HTTPError("Please perform a DELETE request to a valid chat_id.", 404);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 result = await ChatService.leave(req.query);
                 res.status(200).json(result);
             }
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
+            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -46,20 +46,22 @@ module.exports = async function (routes) {
         if (req.path === '/') {
             try {
                 let result = await ChatService.create(req.query);
-                res.status(201).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(201).json(result);
             } catch (e) {
-                const error = new HTTPError(e.code || 500, 'Failed to create chat: ' + e.message);
+                const error = new Error('Failed to create chat: ' + e.message);
+                error.status = e.code || 500;
                 next(error);
             }
         } else {
-            try {                
+            try {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.sendMessage(req.query);
-                res.status(201).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(201).json(result);
             } catch (e) {
-                const error = new HTTPError(e.code || 500, 'Failed to send message: ' + e.message);
+                const error = new Error('Failed to send message: ' + e.message);
+                error.status = e.code || 500;
                 next(error);
             }
         }
@@ -68,15 +70,15 @@ module.exports = async function (routes) {
     route.get('/*', async (req, res, next) => {
         try {
             if (req.path === '/') {
-                const error = new HTTPError(404, "Please perform a GET request to a valid chat_id.");
-                next(error);
+                throw new HTTPError("Please perform a GET request to a valid chat_id.", 404);
             } else {
                 req.query.chat_id = req.path.replace('/', '')
                 let result = await ChatService.getMessages(req.query);
                 res.status(200).json(result);
             }
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Failed to retrieve messages for the chat: ' + e.message);
+            const error = new Error('Failed to retrieve messages for the chat: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });

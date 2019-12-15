@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const path = require('path');
 
 const UserService = require('@app/services/users');
-const HTTPError = require('@app/utils').HTTPError;
+const { HTTPError } = require('@app/errors');
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
@@ -28,41 +28,38 @@ module.exports = async function (routes) {
 
     route.get('/*', async (req, res, next) => {
         try {
-            let result;
             if (req.path === '/') {
-                result = await ReviewService.getAll(req.query);
-                res.status(200).json(result);
+                let result = await ReviewService.getAll(req.query);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(200).json(result);
             } else {
-                result = await ReviewService.read(req.path.replace('/', ''));
-                if (!result) {
-                    throw Error('Invalid id');
-                }
-                res.status(200).json(result);
+                let result = await ReviewService.read(req.path.replace('/', ''));
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(200).json(result);
             }
         } catch (e) {
-            let error = new HTTPError(e.code || 500, 'Error while returning the review: ' + e.message);
+            const error = new Error('Error while returning the review: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });
 
     route.post('/', upload.single('review_image'), async (req, res, next) => {
         try {
-            let result;
             if (req.file) {
                 const photo_path = req.file.path;
-                result = await ReviewService.write(req.query, photo_path);
-                res.status(201).json();
+                let result = await ReviewService.write(req.query, photo_path);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(201).json(result);
             }
             else {
-                result = await ReviewService.write(req.query, null);
-                res.status(201).json(result);
+                let result = await ReviewService.write(req.query, null);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(201).json(result);
             }
         } catch (e) {
-            let error = new Error(e.code || 500, 'Error while inserting Review: ' + e.message);
+            const error = new Error('Error while inserting Review: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });

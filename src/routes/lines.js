@@ -2,8 +2,7 @@ const { Router } = require('express');
 
 const PlaceLineService = require('@app/services/lines');
 const UserService = require('@app/services/users');
-const HTTPError = require('@app/utils').HTTPError;
-
+const { HTTPError } = require('@app/errors');
 
 const route = Router();
 
@@ -13,11 +12,11 @@ module.exports = async function (routes) {
     route.post('/', async (req, res, next) => {
         try {
             let result = await PlaceLineService.place(req.query);
-            res.status(201).json();
             await UserService.increaseInteractions(req.query.logged_user_id);
+            res.status(201).json(result);
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Wrong line info: ' + e.message);
-            console.log(e);
+            const error = new Error('Wrong line info: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });
@@ -28,20 +27,22 @@ module.exports = async function (routes) {
         if (req.path === "/") {
             try {
                 result = await PlaceLineService.getAll(req.query);
-                res.status(200).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(200).json(result);
             } catch (e) {
-                const error = new HTTPError(e.code || 500, 'Error while getting Lines: ' + e.message);
+                const error = new Error( 'Error while getting Lines: ' + e.message);
+                error.status = e.code || 500;
                 next(error);
             }
         }
         else {
             try {
                 result = await PlaceLineService.get(req.path.replace('/', ''));
-                res.status(200).json(result);
                 await UserService.increaseInteractions(req.query.logged_user_id);
+                res.status(200).json(result);
             } catch (e) {
-                const error = new HTTPError(e.code || 500, 'Error while getting Line: ' + e.message);
+                const error = new Error('Error while getting Line: ' + e.message);
+                error.status = e.code || 500;
                 next(error);
             }
         }

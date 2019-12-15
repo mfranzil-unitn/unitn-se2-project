@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
 const RetrieveService = require('@app/services/retrieveNearbyLines');
-const HTTPError = require('@app/utils').HTTPError;
+const { HTTPError } = require('@app/errors');
 
 const route = Router();
 
@@ -13,7 +13,8 @@ module.exports = async function (routes) {
             const result = await RetrieveService.retrieve(req.query);
             res.status(200).json(result);
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Wrong retrieving info: ' + e.message);
+            const error = new Error('Wrong retrieving info: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });

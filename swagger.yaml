@@ -479,7 +479,7 @@ paths:
           description: Internal server error.
 
 #Review's Section
-  /review:
+  /reviews:
     get:
       tags:
       - review
@@ -578,7 +578,7 @@ paths:
           description: The user isn't logged in.
         500:
           description: Internal server error.
-  /review/{review_id}:
+  /reviews/{review_id}:
     get:
       tags:
       - review
@@ -615,13 +615,13 @@ paths:
       description: Given latitude and longitude, this function retrieves lines within a certain radius of 0.1 km
       operationId: retrieveline
       parameters:
-        - name: selected_latitude
+        - name: lat
           in: query
           description: The latitude of the point of interest
           required: true
           schema:
             type: number
-        - name: selected_longitude
+        - name: lon
           in: query
           description: The longitude of the point of interest
           required: true

@@ -26,7 +26,7 @@ async function add(review_id, path) {
 
 async function get(primaryKey) {
     if (!primaryKey || typeof (primaryKey) === "undefined") {
-        throw new HTTPError('No PK', 400);
+        throw new HTTPError('Please insert a correct review_id', 400);
     }
     let path = await Photo.getByPrimaryKey(primaryKey).photo_path;
     if (typeof (path) === "undefined") {

@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
 const UserService = require('@app/services/users');
-const HTTPError = require('@app/utils').HTTPError;
+const { HTTPError } = require('@app/errors');
 
 const route = Router();
 
@@ -14,7 +14,8 @@ module.exports = async function (routes) {
             await UserService.increaseInteractions(req.query.user_id);
             res.status(201).json();
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Failed to create new user: ' + e.message);
+            const error = new Error('Failed to create new user: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });

@@ -4,7 +4,7 @@ const { Router } = require('express');
 const jwt = require('jsonwebtoken')
 
 const UserService = require('@app/services/users');
-const HTTPError = require('@app/utils').HTTPError;
+const { HTTPError } = require('@app/errors');
 
 const route = Router();
 
@@ -27,7 +27,8 @@ module.exports = async function (routes) {
             }
             res.status(204).json();
         } catch (e) {
-            const error = new HTTPError(e.code || 500, 'Failed to login: ' + e.message);
+            const error = new Error('Failed to login: ' + e.message);
+            error.status = e.code || 500;
             next(error);
         }
     });

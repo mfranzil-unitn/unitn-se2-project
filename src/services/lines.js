@@ -27,7 +27,7 @@ async function place(line) {
             + 'line_end_lon: Number, line_name: String, line_description: String}', 400);
     }
 
-    if (query.line_user_id !== query.logged_user_id) {
+    if (line.line_user_id !== line.logged_user_id) {
         throw new HTTPError("Please supply the user_id as you logged in with.", 401);
     }
 

@@ -19,8 +19,6 @@ async function write(review, path) {
 
     let res = await Review.insert(review);
 
-    console.log('Added new review');
-
     if (path) {
         let pic = {};
         pic.photo_review_id = res;
@@ -43,19 +41,19 @@ async function read(rev_id) {
         throw new HTTPError('Review parameter required.', 400);
     }
 
-    let res, res1, res2;
-    if (parseInt(rev_id) !== NaN && rev_id >= 0) {
-        res1 = await Review.getByPrimaryKey(rev_id);
-        res2 = await Photo.getPathByReviewId(rev_id);
-        res = res1;
-        if (res2) {
-            res.review_photo_path = res2.photo_path;
-        }
-        else {
+    let res, path;
+    if (!Number.isNaN(rev_id) && rev_id >= 0) {
+        res = await Review.getByPrimaryKey(rev_id);
+        path = await Photo.getPathByReviewId(rev_id);
+        if (!!path) {
+            res.review_photo_path = path;
+        } else {
             res.review_photo_path = 'No photo provided';
         }
     } else if (typeof res === "undefined") {
         throw new HTTPError('Review with this review_id not found.', 404);
+    } else {
+        throw new HTTPError('Invalid number of parameters', 400);
     }
     return res;
 }
